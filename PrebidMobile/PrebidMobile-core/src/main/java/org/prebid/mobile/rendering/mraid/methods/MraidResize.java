@@ -31,7 +31,7 @@ import androidx.annotation.DrawableRes;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.prebid.mobile.LogUtil;
-import org.prebid.mobile.core.R;
+import com.nativo.prebidsdk.core.R;
 import org.prebid.mobile.rendering.mraid.handler.FetchPropertiesHandler;
 import org.prebid.mobile.rendering.utils.helpers.Dips;
 import org.prebid.mobile.rendering.utils.helpers.Utils;

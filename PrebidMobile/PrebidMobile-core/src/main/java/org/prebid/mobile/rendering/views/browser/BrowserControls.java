@@ -32,7 +32,7 @@ import android.widget.TableRow;
 import androidx.annotation.VisibleForTesting;
 
 import org.prebid.mobile.LogUtil;
-import org.prebid.mobile.core.R;
+import com.nativo.prebidsdk.core.R;
 import org.prebid.mobile.rendering.utils.helpers.ExternalViewerUtils;
 import org.prebid.mobile.rendering.utils.helpers.Utils;
 

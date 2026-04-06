@@ -31,7 +31,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 import org.prebid.mobile.api.exceptions.AdException;
-import org.prebid.mobile.core.R;
+import com.nativo.prebidsdk.core.R;
 import org.prebid.mobile.reflection.Reflection;
 import org.prebid.mobile.rendering.models.InterstitialDisplayPropertiesInternal;
 import org.prebid.mobile.rendering.models.internal.MraidVariableContainer;

@@ -97,14 +97,15 @@ mkdir "$OUTDIR/aar"
 for n in ${!modules[@]}; do
 
   echo -e "\n"
-  echoX "Assembling ${modules[$n]}"
+  echoX "Assembling and repackaging ${modules[$n]}"
   cd $LIBDIR
-  # clean existing build results, exclude test task, and assemble new release build
-  (./gradlew -i --no-daemon ${modules[$n]}:assembleRelease >$LOGPATH/build.log 2>&1 || die "Build failed, check log in $LOGPATH/build.log")
+  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.nativo.prebidsdk.**
+  (./gradlew -i --no-daemon ${modules[$n]}:repackageReleaseAar >$LOGPATH/build.log 2>&1 || die "Build failed, check log in $LOGPATH/build.log")
 
   if [ "$1" != "-nojar" ]; then
-    # Make folder generated/temp/output
+    # Make folder generated/temp/output (remove any leftovers from a failed prior run)
     echoX "Packaging ${modules[$n]}"
+    rm -rf $TEMPDIR
     mkdir $TEMPDIR
     cd $TEMPDIR
     mkdir output
@@ -112,8 +113,9 @@ for n in ${!modules[@]}; do
     AARPATH_ABSOLUTE="${projectPaths[$n]}/$AARPATH"
 
     cd $AARPATH_ABSOLUTE
-    cp ${modules[$n]}-release.aar $OUTDIR/aar
-    unzip -q -o ${modules[$n]}-release.aar
+    # Copy repackaged AAR using the canonical filename expected by the deploy script
+    cp ${modules[$n]}-release-repackaged.aar $OUTDIR/aar/${modules[$n]}-release.aar
+    unzip -q -o ${modules[$n]}-release-repackaged.aar
     cd $TEMPDIR/output
 
     # Extracting the Contents of a JAR File
@@ -133,15 +135,15 @@ for n in ${!modules[@]}; do
     cp -r $AARPATH_ABSOLUTE/META-INF/. $TEMPDIR/output/META-INF/
     # rm -rf $AARPATH_ABSOLUTE/META-INF
     
-    rm -r $TEMPDIR/output/META-INF/com
+    rm -rf $TEMPDIR/output/META-INF/com
 
     # Creating a JAR File
-    if [ "${modules[$n]}" == "PrebidMobile-maxAdapters" ]; then
-      jar cf ${modules[$n]}.jar org* com* META-INF*
-    elif [ "${modules[$n]}" == "PrebidMobile" ]; then
+    # After repackaging, all org.prebid.mobile.* classes are now com.nativo.prebidsdk.*
+    # so we glob com* instead of org*. PrebidMobile (wrapper) has no classes of its own.
+    if [ "${modules[$n]}" == "PrebidMobile" ]; then
       jar cf ${modules[$n]}.jar META-INF*
     else
-      jar cf ${modules[$n]}.jar org* META-INF*
+      jar cf ${modules[$n]}.jar com* META-INF*
     fi
 
     # move jar into a result direcotory

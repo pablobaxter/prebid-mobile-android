@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import com.nativo.prebidsdk.core.R;
 import org.prebid.mobile.PrebidMobile;
 import org.prebid.mobile.rendering.interstitial.AdBaseDialog;
 import org.prebid.mobile.rendering.models.internal.MraidVariableContainer;
