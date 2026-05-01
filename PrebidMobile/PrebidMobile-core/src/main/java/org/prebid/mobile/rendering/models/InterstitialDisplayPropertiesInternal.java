@@ -17,6 +17,7 @@
 package org.prebid.mobile.rendering.models;
 
 import android.content.pm.ActivityInfo;
+import androidx.annotation.Nullable;
 import org.prebid.mobile.api.data.Position;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
 
@@ -36,6 +37,8 @@ public class InterstitialDisplayPropertiesInternal extends InterstitialDisplayPr
     public Position closeButtonPosition = Position.TOP_RIGHT;
     public Position skipButtonPosition = Position.TOP_RIGHT;
     public AdUnitConfiguration config;
+
+    @Nullable public Integer dialogBackgroundColor = null;
 
     public void resetExpandValues() {
         expandHeight = 0;

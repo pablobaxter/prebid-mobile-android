@@ -5,6 +5,7 @@ import org.prebid.mobile.rendering.bidding.data.bid.Bid
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse
 import org.prebid.mobile.rendering.bidding.data.bid.Seatbid
 import org.prebid.mobile.configuration.AdUnitConfiguration
+import java.util.Locale
 
 class NativoBidResponse(
     json: String,
@@ -43,7 +44,7 @@ class NativoBidResponse(
         val width = bid.width
         val height = bid.height
         val size = "${width}x${height}"
-        val price = bid.price.toString()
+        val price = String.format(Locale.US, "%.2f", bid.price)
 
         val targeting = bid.prebid.targeting
         targeting["hb_env"] = "mobile-app"

@@ -20,8 +20,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Pair;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
@@ -37,13 +35,16 @@ import org.prebid.mobile.api.rendering.listeners.BannerVideoListener;
 import org.prebid.mobile.api.rendering.listeners.BannerViewListener;
 import org.prebid.mobile.api.rendering.pluginrenderer.PluginEventListener;
 import org.prebid.mobile.api.rendering.pluginrenderer.PrebidMobilePluginRegister;
+import org.prebid.mobile.api.rendering.pluginrenderer.PrebidMobilePluginRenderer;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
 import com.nativo.prebidsdk.core.R;
 import org.prebid.mobile.rendering.bidding.data.bid.Bid;
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
 import org.prebid.mobile.rendering.bidding.interfaces.BannerEventHandler;
 import org.prebid.mobile.rendering.bidding.interfaces.StandaloneBannerEventHandler;
+import com.nativo.prebidsdk.bid.NativoBidExt;
 import com.nativo.prebidsdk.bid.NativoBidResponse;
+import com.nativo.prebidsdk.bid.NativoAdType;
 import com.nativo.prebidsdk.server.NativoServerProxy;
 import com.nativo.prebidsdk.utils.NativoUtils;
 import org.prebid.mobile.rendering.bidding.listeners.BannerEventListener;
@@ -104,12 +105,22 @@ public class BannerView extends FrameLayout {
         @Override
         public void onAdLoaded() {
             if (bannerViewListener != null) {
-                if (winningBid instanceof NativoBidResponse && NativoUtils.hasImplementedNativoCallback(bannerViewListener)) {
+                if (nativoDidRenderBid(winningBid)) {
+                    // Notify if Nativo was responsible for rendering the bid
                     bannerViewListener.onNativoAdLoaded(BannerView.this);
-                } else {
-                    bannerViewListener.onAdLoaded(BannerView.this);
+                    return;
                 }
+                bannerViewListener.onAdLoaded(BannerView.this);
             }
+        }
+
+        private boolean nativoDidRenderBid(BidResponse bidResponse) {
+            if (bidResponse instanceof NativoBidResponse && NativoUtils.hasImplementedNativoCallback(bannerViewListener)) {
+                NativoAdType adType = NativoBidExt.getNativoAdType(bidResponse.getWinningBid());
+                // Nativo rendering not used for type STANDARD_DISPLAY
+                return adType != NativoAdType.STANDARD_DISPLAY;
+            }
+            return false;
         }
 
         @Override
@@ -524,15 +535,12 @@ public class BannerView extends FrameLayout {
         removeAllViews();
 
         displayView = new DisplayView(getContext(), displayViewListener, displayVideoListener, adUnitConfig, bidResponse);
-        // I believe this may have been a bug since the first clause would never be true since originally getPreferredPluginRendererName()
-        // would return 'null' unless the renderer was explicitely set, which for the default PrebidRenderer it never would be.
-        // Because of this, slight change to PrebidSDK needed here in order to ensure non-Nativo ads render as expected
-        // with correct width and height.
-        if (PrebidMobilePluginRegister.PREBID_MOBILE_RENDERER_NAME.equals(bidResponse.getPreferredPluginRendererName())) {
-            final Pair<Integer, Integer> sizePair = bidResponse.getWinningBidWidthHeightPairDips(getContext());
-            addView(displayView, new FrameLayout.LayoutParams(sizePair.first, sizePair.second, Gravity.CENTER));
-        } else {
-            addView(displayView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        addView(displayView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+
+        // Give the PluginRenderer the final layout pass
+        PrebidMobilePluginRenderer plugin = PrebidMobilePluginRegister.getInstance().getPluginForPreferredRenderer(bidResponse);
+        if (plugin != null) {
+            plugin.didInjectView(displayView, this, bidResponse);
         }
     }
 

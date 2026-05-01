@@ -29,6 +29,7 @@ import org.prebid.mobile.rendering.bidding.display.BidResponseCache;
 import org.prebid.mobile.rendering.bidding.listeners.DisplayVideoListener;
 import org.prebid.mobile.rendering.bidding.listeners.DisplayViewListener;
 import org.prebid.mobile.rendering.models.AdDetails;
+import org.prebid.mobile.rendering.models.InterstitialDisplayPropertiesInternal;
 import org.prebid.mobile.rendering.utils.broadcast.local.EventForwardingLocalBroadcastReceiver;
 import org.prebid.mobile.rendering.utils.constants.IntentActions;
 import org.prebid.mobile.rendering.views.AdViewManager;
@@ -196,6 +197,10 @@ public class PrebidDisplayView extends FrameLayout implements PrebidDestroyable 
             @NonNull String responseId
     ) throws AdException {
         this(context, listener, displayVideoListener, adUnitConfiguration, getBidResponseFromCache(responseId));
+    }
+
+    public InterstitialDisplayPropertiesInternal getInterstitialDisplayProperties() {
+        return interstitialManager.getInterstitialDisplayProperties();
     }
 
     @Override

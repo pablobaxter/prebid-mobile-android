@@ -26,6 +26,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import org.prebid.mobile.LogUtil;
+import org.prebid.mobile.rendering.models.InterstitialDisplayPropertiesInternal;
 import org.prebid.mobile.rendering.utils.helpers.Utils;
 import org.prebid.mobile.rendering.views.interstitial.InterstitialManager;
 import org.prebid.mobile.rendering.views.webview.PrebidWebViewBase;
@@ -56,6 +57,12 @@ public class AdExpandedDialog extends AdBaseDialog {
         //they see the old ad.
 
         preInit();
+
+        // Set dialog background color from DisplayProperties
+        InterstitialDisplayPropertiesInternal displayProperties = interstitialManager.getInterstitialDisplayProperties();
+        if (displayProperties != null && displayProperties.dialogBackgroundColor != null) {
+            adViewContainer.setBackgroundColor(displayProperties.dialogBackgroundColor);
+        }
 
         // Attach adViewContainer to the dialog before show() is called so the WebView is already
         // in the view hierarchy when the slide-in animation begins, preventing a visible glitch.
