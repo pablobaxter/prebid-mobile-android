@@ -47,7 +47,7 @@ AARPATH=build/outputs/aar
 BUILD_LIBS_PATH=build/libs
 TEMPDIR=$OUTDIR/temp
 LIBDIR=$BASEDIR
-PREBIDCORE=NativoPrebidSDK
+PREBIDCORE=Life360PrebidSDK
 
 echoX "$BASEDIR"
 
@@ -97,11 +97,11 @@ mkdir "$OUTDIR/aar"
 for n in ${!modules[@]}; do
 
   echo -e "\n"
-  # Derive the public output name: PrebidMobile[-suffix] → NativoPrebidSDK[-suffix]
-  OUTPUT_NAME="${modules[$n]/PrebidMobile/NativoPrebidSDK}"
+  # Derive the public output name: PrebidMobile[-suffix] → Life360PrebidSDK[-suffix]
+  OUTPUT_NAME="${modules[$n]/PrebidMobile/Life360PrebidSDK}"
   echoX "Assembling and repackaging ${OUTPUT_NAME}"
   cd $LIBDIR
-  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.nativo.prebidsdk.**
+  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.life360.prebidsdk.**
   (./gradlew -i --no-daemon ${modules[$n]}:repackageReleaseAar >$LOGPATH/build.log 2>&1 || die "Build failed, check log in $LOGPATH/build.log")
 
   if [ "$1" != "-nojar" ]; then
@@ -139,9 +139,9 @@ for n in ${!modules[@]}; do
     
     rm -rf $TEMPDIR/output/META-INF/com
 
-    # Creating a JAR File (output named NativoPrebidSDK-*)
-    # After repackaging, all org.prebid.mobile.* classes are now com.nativo.prebidsdk.*
-    # so we glob com* instead of org*. NativoPrebidSDK (wrapper) has no classes of its own.
+    # Creating a JAR File (output named Life360PrebidSDK-*)
+    # After repackaging, all org.prebid.mobile.* classes are now com.life360.prebidsdk.*
+    # so we glob com* instead of org*. Life360PrebidSDK (wrapper) has no classes of its own.
     if [ "${modules[$n]}" == "PrebidMobile" ]; then
       jar cf ${OUTPUT_NAME}.jar META-INF*
     else
@@ -161,7 +161,7 @@ for n in ${!modules[@]}; do
     echoX "Preparing ${OUTPUT_NAME} sources"
     ./gradlew -i --no-daemon ${modules[$n]}:sourcesJar >$LOGPATH/sources.log 2>&1 || die "Build Sources failed, check log in $LOGPATH/sources.log"
 
-    # copy sources and javadoc into result directory, then rename from PrebidMobile-* to NativoPrebidSDK-*
+    # copy sources and javadoc into result directory, then rename from PrebidMobile-* to Life360PrebidSDK-*
     BUILD_LIBS_PATH_ABSOLUTE="${projectPaths[$n]}/$BUILD_LIBS_PATH"
     cp -a $BUILD_LIBS_PATH_ABSOLUTE/. $OUTDIR/
     for f in "$OUTDIR"/${modules[$n]}-*.jar; do
@@ -204,8 +204,8 @@ POM_OUTDIR="$OUTDIR/pom"
 mkdir "$POM_OUTDIR"
 
 for module in "${modules[@]}"; do
-  # Output POM uses the public NativoPrebidSDK-* name
-  POM_OUTPUT_NAME="${module/PrebidMobile/NativoPrebidSDK}"
+  # Output POM uses the public Life360PrebidSDK-* name
+  POM_OUTPUT_NAME="${module/PrebidMobile/Life360PrebidSDK}"
   TEMPLATE="$POM_TEMPLATE_DIR/${module}-pom.xml"
   if [ -f "$TEMPLATE" ]; then
     awk -v VER="$RELEASE_VERSION" '

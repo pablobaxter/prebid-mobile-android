@@ -4,13 +4,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.nativo</groupId>
-    <artifactId>nativo-prebid-mobile-sdk-gam-event-handlers</artifactId>
+    <groupId>com.life360</groupId>
+    <artifactId>life360-prebid-mobile-sdk-gam-event-handlers</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
 
     <name>Nativo Prebid Mobile Android SDK – GAM Event Handlers</name>
-    <description>Nativo fork of Prebid Mobile Android SDK</description>
+    <description>Life360 Ads fork of Prebid Mobile Android SDK</description>
     <url>https://github.com/life360-oss/nativo-prebid-sdk-android</url>
 
     <licenses>
@@ -51,8 +51,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.nativo</groupId>
-            <artifactId>nativo-prebid-mobile-sdk</artifactId>
+            <groupId>com.life360</groupId>
+            <artifactId>life360-prebid-mobile-sdk</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>

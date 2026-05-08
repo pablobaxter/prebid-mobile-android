@@ -33,7 +33,7 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 import androidx.annotation.VisibleForTesting;
 import org.prebid.mobile.LogUtil;
-import com.nativo.prebidsdk.core.R;
+import com.life360.prebidsdk.core.R;
 import org.prebid.mobile.rendering.sdk.BaseManager;
 import org.prebid.mobile.rendering.sdk.calendar.CalendarEventWrapper;
 import org.prebid.mobile.rendering.sdk.calendar.CalendarFactory;

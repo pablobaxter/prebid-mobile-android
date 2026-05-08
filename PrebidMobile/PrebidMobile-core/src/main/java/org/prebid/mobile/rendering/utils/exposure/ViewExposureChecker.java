@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidx.annotation.VisibleForTesting;
 import org.prebid.mobile.LogUtil;
-import com.nativo.prebidsdk.core.R;
+import com.life360.prebidsdk.core.R;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

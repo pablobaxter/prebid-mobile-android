@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.mraid
+package com.life360.prebidsdk.mraid
 
 const val MRAID_DEBUG_SCRIPT: String = """
     function sendMessageToLogHandler(message) {

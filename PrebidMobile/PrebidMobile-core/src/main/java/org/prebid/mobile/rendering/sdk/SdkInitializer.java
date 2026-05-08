@@ -7,7 +7,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.nativo.prebidsdk.renderer.NativoPrebidRenderer;
+import com.life360.prebidsdk.renderer.NativoPrebidRenderer;
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.LogUtil.PrebidLogger;
 import org.prebid.mobile.PrebidMobile;

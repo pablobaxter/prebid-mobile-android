@@ -42,7 +42,7 @@ import com.iab.omid.library.prebidorg.adsession.media.VastProperties;
 
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.TargetingParams;
-import com.nativo.prebidsdk.core.BuildConfig;
+import com.life360.prebidsdk.core.BuildConfig;
 import org.prebid.mobile.rendering.models.TrackingEvent;
 import org.prebid.mobile.rendering.models.internal.InternalFriendlyObstruction;
 import org.prebid.mobile.rendering.models.internal.InternalPlayerState;

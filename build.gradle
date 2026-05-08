@@ -5,7 +5,7 @@ ext {
     prebidSdkCompileVersion = 34
     prebidSdkBuildToolsVersion = "35.0.1"
 
-    artifactGroupId = "com.nativo"
+    artifactGroupId = "com.life360"
     artifactFolder = "${buildDir}/generated-artifacts"
     omSdkVersion = "1.4.1"
     omSdkModuleName = "omsdk-android"

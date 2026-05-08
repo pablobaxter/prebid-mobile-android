@@ -20,7 +20,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import androidx.annotation.Nullable;
-import com.nativo.prebidsdk.core.R;
+import com.life360.prebidsdk.core.R;
 
 
 public class VolumeControlView extends ImageView {

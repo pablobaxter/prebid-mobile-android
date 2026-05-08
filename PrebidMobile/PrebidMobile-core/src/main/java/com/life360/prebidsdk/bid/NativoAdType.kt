@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.bid
+package com.life360.prebidsdk.bid
 
 enum class NativoAdType(val type: Int) {
     ARTICLE(0),

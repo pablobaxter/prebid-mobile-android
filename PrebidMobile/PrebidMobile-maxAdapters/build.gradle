@@ -7,7 +7,7 @@ dependencies {
     implementation libs.applovin.sdk
 }
 android {
-    namespace "com.nativo.prebidsdk.max.adapters"
+    namespace "com.life360.prebidsdk.max.adapters"
     defaultConfig {
         multiDexEnabled true
     }

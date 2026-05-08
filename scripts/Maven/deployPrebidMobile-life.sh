@@ -56,7 +56,7 @@ if ! $IS_SNAPSHOT; then
   fi
 fi
 
-NAMESPACE="com.nativo"
+NAMESPACE="com.life360"
 
 RELEASE_URL="https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 SNAPSHOT_URL="https://central.sonatype.com/repository/maven-snapshots/"

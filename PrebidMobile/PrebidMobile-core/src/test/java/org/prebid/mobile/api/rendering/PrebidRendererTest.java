@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.prebid.mobile.api.data.AdFormat;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
-import com.nativo.prebidsdk.core.BuildConfig;
+import com.life360.prebidsdk.core.BuildConfig;
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
 import org.prebid.mobile.rendering.bidding.interfaces.InterstitialControllerListener;
 import org.prebid.mobile.rendering.bidding.listeners.DisplayVideoListener;

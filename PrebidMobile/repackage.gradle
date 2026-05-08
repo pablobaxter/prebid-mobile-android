@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// publish-time relocation: org.prebid.mobile.** → com.nativo.prebidsdk.**
+// publish-time relocation: org.prebid.mobile.** → com.life360.prebidsdk.**
 //
 // This script is applied by android.gradle to every library module.
 // It adds one task, repackageReleaseAar, that:
@@ -31,7 +31,7 @@ dependencies {
 }
 
 task repackageReleaseAar(dependsOn: 'bundleReleaseAar') {
-    description = 'Relocates org.prebid.mobile.* → com.nativo.prebidsdk.* in the release AAR.'
+    description = 'Relocates org.prebid.mobile.* → com.life360.prebidsdk.* in the release AAR.'
     group       = 'publishing'
 
     def moduleName = project.name
@@ -80,14 +80,14 @@ task repackageReleaseAar(dependsOn: 'bundleReleaseAar') {
         def manifest = new File(extractDir, "AndroidManifest.xml")
         if (manifest.exists()) {
             manifest.text = manifest.text.replace(
-                    'org.prebid.mobile', 'com.nativo.prebidsdk')
+                    'org.prebid.mobile', 'com.life360.prebidsdk')
         }
 
         // ── Step 4: fix consumer ProGuard rules ──────────────────────────────
         def proguard = new File(extractDir, "proguard.txt")
         if (proguard.exists()) {
             proguard.text = proguard.text.replace(
-                'org.prebid.mobile', 'com.nativo.prebidsdk')
+                'org.prebid.mobile', 'com.life360.prebidsdk')
         }
 
         // ── Step 5: rezip as the output AAR ──────────────────────────────────
