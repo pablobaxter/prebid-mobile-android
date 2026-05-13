@@ -67,7 +67,7 @@ public abstract class AdBaseDialog extends Dialog {
     protected View displayView;
     protected View soundView;
     protected View skipView;
-    private View closeView;
+    protected View closeView;
 
     // IMP: shud be always none. cos this val is used when expand is called with an url.
     protected OrientationManager.ForcedOrientation forceOrientation = OrientationManager.ForcedOrientation.none;

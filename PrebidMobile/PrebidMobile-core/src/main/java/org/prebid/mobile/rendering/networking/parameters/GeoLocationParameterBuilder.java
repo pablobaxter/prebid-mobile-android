@@ -38,6 +38,10 @@ public class GeoLocationParameterBuilder extends ParameterBuilder {
 
     public static final int LOCATION_SOURCE_GPS = 1;
 
+    protected boolean isEnabled() {
+        return PrebidMobile.isShareGeoLocation();
+    }
+
     @Override
     public void appendBuilderParameters(AdRequestInput adRequestInput) {
         LocationInfoManager locationInfoManager = ManagersResolver.getInstance().getLocationManager();
@@ -46,7 +50,7 @@ public class GeoLocationParameterBuilder extends ParameterBuilder {
         // Strictly ignore publisher geo values
         adRequestInput.getBidRequest().getDevice().setGeo(null);
 
-        if (locationInfoManager != null && PrebidMobile.isShareGeoLocation()) {
+        if (locationInfoManager != null && isEnabled()) {
             if (deviceManager != null && (deviceManager.isPermissionGranted("android.permission.ACCESS_FINE_LOCATION")
                     || deviceManager.isPermissionGranted("android.permission.ACCESS_COARSE_LOCATION"))) {
                 setLocation(adRequestInput, locationInfoManager);

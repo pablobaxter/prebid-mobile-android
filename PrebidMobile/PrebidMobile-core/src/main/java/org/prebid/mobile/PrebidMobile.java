@@ -47,6 +47,9 @@ import java.util.Map;
  */
 public class PrebidMobile {
 
+    // Retry attempts for CreativeFactory timeouts
+    private static int creativeFactoryTimeoutRetryCount = 2;
+
     /**
      * Minimum refresh interval allowed. 30 seconds
      */
@@ -68,7 +71,7 @@ public class PrebidMobile {
     /**
      * SDK name provided for MRAID_ENV in {@link MraidEnv}
      */
-    public static final String SDK_NAME = "prebid-mobile-sdk-rendering";
+    public static final String SDK_NAME = "nativo-prebid-sdk-rendering";
     /**
      * Currently implemented MRAID version.
      */
@@ -100,6 +103,7 @@ public class PrebidMobile {
 
     private static boolean pbsDebug = false;
     private static boolean shareGeoLocation = false;
+    private static boolean shareGeoLocationWithNativo = false;
     private static boolean assignNativeAssetID = false;
 
     /**
@@ -210,6 +214,20 @@ public class PrebidMobile {
      */
     public static boolean isShareGeoLocation() {
         return shareGeoLocation;
+    }
+
+    /**
+     * Allows the SDK to share geolocation on Nativo bid requests if permission is granted by the user.
+     */
+    public static void setShareGeoLocationWithNativo(boolean share) {
+        PrebidMobile.shareGeoLocationWithNativo = share;
+    }
+
+    /**
+     * {@link #setShareGeoLocationWithNativo(boolean)}
+     */
+    public static boolean isShareGeoLocationWithNativo() {
+        return shareGeoLocationWithNativo;
     }
 
     /**
@@ -484,6 +502,20 @@ public class PrebidMobile {
         return creativeFactoryTimeoutPreRenderContent;
     }
 
+    /**
+     * Gets number of retry attempts for CreativeFactory timeouts.
+     * Default is 2. Set to 0 to disable retries.
+     */
+    public static int getCreativeFactoryTimeoutRetryCount() {
+        return creativeFactoryTimeoutRetryCount;
+    }
+
+    /**
+     * Sets number of retry attempts for CreativeFactory timeouts. Negative values are treated as 0.
+     */
+    public static void setCreativeFactoryTimeoutRetryCount(int retryCount) {
+        PrebidMobile.creativeFactoryTimeoutRetryCount = Math.max(0, retryCount);
+    }
 
     /**
      * Sets creative factory timeout for prerender content. It's time to parse and render interstitial ads.

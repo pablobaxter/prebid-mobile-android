@@ -45,6 +45,7 @@ import java.util.ArrayList;
 public class CreativeFactory {
 
     private static final String TAG = CreativeFactory.class.getSimpleName();
+    public static final String TIMEOUT_ERROR_MESSAGE = "Creative factory Timeout";
 
     private AbstractCreative creative;
     private CreativeModel creativeModel;
@@ -210,7 +211,7 @@ public class CreativeFactory {
         timeoutHandler.postDelayed(() -> {
             if (timeoutState != TimeoutState.FINISHED) {
                 timeoutState = TimeoutState.EXPIRED;
-                listener.onFailure((new AdException(AdException.INTERNAL_ERROR, "Creative factory Timeout")));
+                listener.onFailure((new AdException(AdException.INTERNAL_ERROR, TIMEOUT_ERROR_MESSAGE)));
             }
         }, timeout);
     }

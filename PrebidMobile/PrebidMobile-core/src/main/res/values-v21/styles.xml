@@ -5,10 +5,11 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:colorBackground">@android:color/white</item>
 
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/DialogSlideUpAnimation</item>
     </style>
 </resources>

@@ -17,7 +17,7 @@
 package org.prebid.mobile.rendering.bidding.interfaces;
 
 import org.prebid.mobile.AdSize;
-import org.prebid.mobile.rendering.bidding.data.bid.Bid;
+import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
 import org.prebid.mobile.rendering.bidding.listeners.BannerEventListener;
 
 public class StandaloneBannerEventHandler implements BannerEventHandler {
@@ -34,12 +34,17 @@ public class StandaloneBannerEventHandler implements BannerEventHandler {
     }
 
     @Override
-    public void requestAdWithBid(Bid bid) {
-        bannerViewListener.onPrebidSdkWin();
+    public void requestAdWithBid(BidResponse bid) {
+        bannerViewListener.onSdkWin(bid);
     }
 
     @Override
     public void trackImpression() {
+
+    }
+
+    @Override
+    public void trackClick() {
 
     }
 

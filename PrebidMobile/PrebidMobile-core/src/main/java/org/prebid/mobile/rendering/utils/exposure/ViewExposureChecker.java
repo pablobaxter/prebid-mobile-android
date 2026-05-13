@@ -175,11 +175,9 @@ public class ViewExposureChecker {
             testForObstructing(child);
         }
 
-        if (!(child instanceof ViewGroup)) {
+        if (!(child instanceof ViewGroup viewGroup)) {
             return;
         }
-
-        ViewGroup viewGroup = ((ViewGroup) child);
 
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             collectObstructionsFrom(viewGroup.getChildAt(i));

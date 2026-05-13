@@ -53,7 +53,7 @@ echoX "$BASEDIR"
 
 # set the default release version to what's in the project's build.gradle file
 RELEASE_VERSION=""
-regex="prebidVersionName.*=.*\"(.*)\""
+regex="prebidSdkVersionName.*=.*\"(.*)\""
 while read -r line; do
   if [[ $line =~ $regex ]]; then
     RELEASE_VERSION=${BASH_REMATCH[1]}

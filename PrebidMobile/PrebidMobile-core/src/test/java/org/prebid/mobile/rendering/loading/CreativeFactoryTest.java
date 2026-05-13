@@ -28,6 +28,7 @@ import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
 import org.prebid.mobile.rendering.models.AbstractCreative;
 import org.prebid.mobile.rendering.models.CreativeModel;
+import org.prebid.mobile.rendering.models.CreativeModelsMaker;
 import org.prebid.mobile.rendering.models.HTMLCreative;
 import org.prebid.mobile.rendering.session.manager.OmAdSessionManager;
 import org.prebid.mobile.rendering.video.VideoAdEvent;
@@ -42,6 +43,7 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -225,5 +227,73 @@ public class CreativeFactoryTest {
         creativeFactory.destroy();
 
         verify(mockHandler).removeCallbacks(null);
+    }
+
+    @Test
+    public void timeoutOccurs_CreativeFactoryListenerInitializedWithCorrectRetryCount()
+    throws Exception {
+        // Set retry count to 3
+        PrebidMobile.setCreativeFactoryTimeoutRetryCount(3);
+        
+        // Create a mock transaction
+        Transaction mockTransaction = mock(Transaction.class);
+        
+        // Create CreativeFactoryListener - it should get retry count from PrebidMobile
+        Transaction.CreativeFactoryListener factoryListener = new Transaction.CreativeFactoryListener(mockTransaction);
+        
+        // Verify initial retry count is set from PrebidMobile configuration
+        int retryCount = WhiteBox.getInternalState(factoryListener, "retryTimeoutAttempts");
+        assertEquals(3, retryCount);
+        
+        // Test with different retry count
+        PrebidMobile.setCreativeFactoryTimeoutRetryCount(5);
+        Transaction.CreativeFactoryListener factoryListener2 = new Transaction.CreativeFactoryListener(mockTransaction);
+        int retryCount2 = WhiteBox.getInternalState(factoryListener2, "retryTimeoutAttempts");
+        assertEquals(5, retryCount2);
+    }
+
+    @Test
+    public void nonTimeoutFailure_CreativeFactoryListenerDoesNotRetry()
+    throws Exception {
+        // Set retry count to 2
+        PrebidMobile.setCreativeFactoryTimeoutRetryCount(2);
+        
+        // Create real transaction with mocked dependencies
+        List<CreativeModel> creativeModels = new ArrayList<>();
+        creativeModels.add(mockModel);
+        Transaction.Listener mockTransactionListener = mock(Transaction.Listener.class);
+        
+        Transaction transaction = Transaction.createTransaction(
+                mockContext,
+                createModelResult(creativeModels, "test"),
+                mockInterstitialManager,
+                mockTransactionListener
+        );
+        
+        // Create CreativeFactoryListener
+        Transaction.CreativeFactoryListener factoryListener = new Transaction.CreativeFactoryListener(transaction);
+        
+        // Get initial retry count
+        int initialRetryCount = WhiteBox.getInternalState(factoryListener, "retryTimeoutAttempts");
+        assertEquals(2, initialRetryCount);
+        
+        // Create a non-timeout exception
+        AdException nonTimeoutException = new AdException(AdException.INTERNAL_ERROR, "Some other error");
+        
+        // Non-timeout failure - should NOT trigger retry, retry count should remain unchanged
+        factoryListener.onFailure(nonTimeoutException);
+        int retryCountAfterFailure = WhiteBox.getInternalState(factoryListener, "retryTimeoutAttempts");
+        assertEquals(2, retryCountAfterFailure); // Should remain unchanged
+        
+        // Verify transaction failure was called
+        verify(mockTransactionListener, times(1)).onTransactionFailure(eq(nonTimeoutException), anyString());
+    }
+
+    private CreativeModelsMaker.Result createModelResult(List<CreativeModel> creativeModels, String state) {
+        CreativeModelsMaker.Result result = new CreativeModelsMaker.Result();
+        result.creativeModels = creativeModels;
+        result.transactionState = state;
+        result.loaderIdentifier = "123";
+        return result;
     }
 }

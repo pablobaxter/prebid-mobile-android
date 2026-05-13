@@ -18,6 +18,7 @@ package org.prebid.mobile.rendering.loading;
 
 import android.content.Context;
 import org.prebid.mobile.LogUtil;
+import org.prebid.mobile.PrebidMobile;
 import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.rendering.models.CreativeModel;
 import org.prebid.mobile.rendering.models.CreativeModelsMaker;
@@ -36,6 +37,7 @@ public class Transaction {
 
     private List<CreativeFactory> creativeFactories;
     private Iterator<CreativeFactory> creativeFactoryIterator;
+    private CreativeFactory currentCreativeFactory;
 
     private List<CreativeModel> creativeModels;
 
@@ -161,10 +163,36 @@ public class Transaction {
         if (creativeFactoryIterator == null || !creativeFactoryIterator.hasNext()) {
             return false;
         }
-
-        CreativeFactory creativeFactory = creativeFactoryIterator.next();
-        creativeFactory.start();
+        currentCreativeFactory = creativeFactoryIterator.next();
+        currentCreativeFactory.start();
         return true;
+    }
+
+    private CreativeFactory createFactoryForModel(CreativeModel creativeModel) throws AdException {
+        return new CreativeFactory(contextReference.get(),
+                creativeModel,
+                new CreativeFactoryListener(this),
+                omAdSessionManager,
+                interstitialManager
+        );
+    }
+
+    private void retryCurrentFactory() {
+        LogUtil.warning(TAG, "Creative factory retry.");
+
+        // Destroy current factory and recreate a fresh one for the same model
+        CreativeModel model = currentCreativeFactory.getCreative().getCreativeModel();;
+        if (currentCreativeFactory != null) {
+            currentCreativeFactory.destroy();
+        }
+
+        try {
+            currentCreativeFactory = createFactoryForModel(model);
+            currentCreativeFactory.start();
+        } catch (AdException e) {
+            listener.onTransactionFailure(e, loaderIdentifier);
+            destroy();
+        }
     }
 
     private void stopOmAdSession() {
@@ -204,6 +232,7 @@ public class Transaction {
     public static class CreativeFactoryListener implements CreativeFactory.Listener {
 
         private WeakReference<Transaction> weakTransaction;
+        private int retryTimeoutAttempts = PrebidMobile.getCreativeFactoryTimeoutRetryCount();
 
         CreativeFactoryListener(Transaction transaction) {
             weakTransaction = new WeakReference<>(transaction);
@@ -232,6 +261,14 @@ public class Transaction {
             if (transaction == null) {
                 LogUtil.warning(TAG, "CreativeMaker is null");
                 return;
+            }
+
+            // Retry attempt after timeout
+            String msg = e != null ? e.getMessage() : null;
+            boolean isFactoryTimeout = CreativeFactory.TIMEOUT_ERROR_MESSAGE.equals(msg);
+            if (isFactoryTimeout && retryTimeoutAttempts > 0) {
+                retryTimeoutAttempts--;
+                transaction.retryCurrentFactory();
             }
 
             transaction.listener.onTransactionFailure(e, transaction.getLoaderIdentifier());

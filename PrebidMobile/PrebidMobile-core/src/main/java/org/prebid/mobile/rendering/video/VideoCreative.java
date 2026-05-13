@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import com.nativo.prebidsdk.exposure.NativoCreativeVisibilityTracker;
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
@@ -30,7 +31,6 @@ import org.prebid.mobile.rendering.interstitial.InterstitialManagerVideoDelegate
 import org.prebid.mobile.rendering.listeners.CreativeViewListener;
 import org.prebid.mobile.rendering.listeners.VideoCreativeViewListener;
 import org.prebid.mobile.rendering.loading.FileDownloadListener;
-import org.prebid.mobile.rendering.models.CreativeVisibilityTracker;
 import org.prebid.mobile.rendering.models.TrackingEvent;
 import org.prebid.mobile.rendering.models.internal.InternalPlayerState;
 import org.prebid.mobile.rendering.models.internal.VisibilityTrackerOption;
@@ -97,7 +97,6 @@ public class VideoCreative extends VideoCreativeProtocol
             setStartIsMutedValue(model.getAdConfiguration().isMuted());
 
             model.trackPlayerStateChange(InternalPlayerState.NORMAL);
-            startViewabilityTracker();
         }
     }
 
@@ -232,7 +231,7 @@ public class VideoCreative extends VideoCreativeProtocol
     public void startViewabilityTracker() {
         VisibilityTrackerOption visibilityTrackerOption = new VisibilityTrackerOption(NativeEventTracker.EventType.IMPRESSION);
 
-        creativeVisibilityTracker = new CreativeVisibilityTracker(getCreativeView(), visibilityTrackerOption);
+        creativeVisibilityTracker = new NativoCreativeVisibilityTracker(getCreativeView(), visibilityTrackerOption);
         creativeVisibilityTracker.setVisibilityTrackerListener((result) -> {
             if (result.isVisible() && result.shouldFireImpression()) {
                 model.trackVideoEvent(VideoAdEvent.Event.AD_IMPRESSION);

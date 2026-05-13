@@ -416,6 +416,8 @@ public class AdViewManager implements CreativeViewListener, TransactionManagerLi
     private void displayCreative(View creativeView) {
         currentCreative.display();
         adViewListener.viewReadyForImmediateDisplay(creativeView);
+        // Start visibility tracking after the ad has been displayed
+        currentCreative.startViewabilityTracker();
     }
 
     private boolean isCreativeResolved() {

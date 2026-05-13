@@ -16,12 +16,18 @@
 
 package org.prebid.mobile.rendering.interstitial;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import org.prebid.mobile.LogUtil;
+import org.prebid.mobile.rendering.models.InterstitialDisplayPropertiesInternal;
+import org.prebid.mobile.rendering.utils.helpers.Utils;
 import org.prebid.mobile.rendering.views.interstitial.InterstitialManager;
 import org.prebid.mobile.rendering.views.webview.PrebidWebViewBase;
 import org.prebid.mobile.rendering.views.webview.WebViewBase;
@@ -35,10 +41,37 @@ public class AdExpandedDialog extends AdBaseDialog {
     public AdExpandedDialog(final Context context, final WebViewBase webViewBaseLocal, InterstitialManager interstitialManager) {
         super(context, webViewBaseLocal, interstitialManager);
 
+        // Ensure device status bar remains visible
+        Window window = getWindow();
+        if (window != null) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        // Hide the web view for now to prevent glitching
+        if (webViewBase != null) {
+            webViewBase.setAlpha(0f);
+        }
+
         //On MRAID expand we should not remove the old adview such that when the user closes the expanded ad
         //they see the old ad.
 
         preInit();
+
+        // Set dialog background color from DisplayProperties
+        InterstitialDisplayPropertiesInternal displayProperties = interstitialManager.getInterstitialDisplayProperties();
+        if (displayProperties != null && displayProperties.dialogBackgroundColor != null) {
+            adViewContainer.setBackgroundColor(displayProperties.dialogBackgroundColor);
+        }
+
+        // Attach adViewContainer to the dialog before show() is called so the WebView is already
+        // in the view hierarchy when the slide-in animation begins, preventing a visible glitch.
+        Views.removeFromParent(adViewContainer);
+        addContentView(adViewContainer,
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.MATCH_PARENT
+                )
+        );
 
         if (webViewBase != null && webViewBase.isMRAID()) {
             webViewBase.getMRAIDInterface().onStateChange(JSInterface.STATE_EXPANDED);
@@ -71,6 +104,26 @@ public class AdExpandedDialog extends AdBaseDialog {
         });
 
         webViewBase.setDialog(this);
+        bypassTouchListener();
+    }
+
+    // Bypass the default WebViewBase listener which prevents scrolling
+    @SuppressLint("ClickableViewAccessibility")
+    private void bypassTouchListener() {
+        webViewBase.setOnTouchListener((v, event) -> {
+            return false; // Return false to allow event propagation
+        });
+    }
+
+    @Override
+    protected void addCloseView() {
+        super.addCloseView();
+        if (closeView != null) {
+            // Ensure close button sits comfortably below the status bar
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) closeView.getLayoutParams();
+            params.topMargin += Utils.convertDpToPx(32, closeView.getContext());
+            closeView.setLayoutParams(params);
+        }
     }
 
     @Override
@@ -80,11 +133,11 @@ public class AdExpandedDialog extends AdBaseDialog {
 
     @Override
     protected void handleDialogShow() {
-        Views.removeFromParent(adViewContainer);
-        addContentView(adViewContainer,
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT
-                )
+        webViewBase.setOnContentReadyCallback(() ->
+                webViewBase.postDelayed(() ->
+                                webViewBase.animate().alpha(1f).setDuration(250).start()
+                        ,300)
+
         );
     }
 }

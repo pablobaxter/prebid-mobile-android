@@ -29,6 +29,9 @@ import com.google.android.gms.ads.admanager.AdManagerAdRequest;
 import com.google.android.gms.ads.admanager.AdManagerAdView;
 import com.google.android.gms.ads.admanager.AppEventListener;
 
+import android.view.ViewGroup;
+import android.webkit.WebView;
+
 import org.prebid.mobile.AdSize;
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.eventhandlers.global.Constants;
@@ -46,6 +49,17 @@ import java.util.Map;
 public class PublisherAdViewWrapper extends AdListener implements AppEventListener {
 
     private static final String TAG = PublisherAdViewWrapper.class.getSimpleName();
+
+    /**
+     * Element ID in the GAM Prebid creative whose href contains the click tracking URL
+     * populated by GAM's {@code %%CLICK_URL_UNESC%%} macro.
+     */
+    static final String GAM_CLICK_ELEMENT_ID = "exchange-ping-url";
+
+    private static final String JS_EXTRACT_CLICK_URL = "(function() {"
+            + "var el = document.getElementById('" + GAM_CLICK_ELEMENT_ID + "');"
+            + "return el ? el.href : '';"
+            + "})()";
 
     private final AdManagerAdView adView;
     private final GamAdEventListener listener;
@@ -166,6 +180,65 @@ public class PublisherAdViewWrapper extends AdListener implements AppEventListen
 
     public View getView() {
         return adView;
+    }
+
+    /**
+     * Extracts the GAM click tracking URL from the proxy AdManagerAdView's rendered HTML.
+     * GAM populates {@code %%CLICK_URL_UNESC%%} in the creative, which appears as the href
+     * of an anchor with {@code id="exchange-ping-url"}.
+     */
+    public void extractGamClickUrl(@NonNull GamClickUrlListener callback) {
+        try {
+            WebView webView = findFirstWebView(adView);
+            if (webView == null) {
+                LogUtil.debug(TAG, "extractGamClickUrl: No WebView found inside AdManagerAdView");
+                callback.onResult(null);
+                return;
+            }
+
+            webView.evaluateJavascript(JS_EXTRACT_CLICK_URL, value -> {
+                String clickUrl = parseJsString(value);
+                LogUtil.debug(TAG, "extractGamClickUrl: " + clickUrl);
+                callback.onResult(clickUrl);
+            });
+        } catch (Throwable throwable) {
+            LogUtil.error(TAG, "extractGamClickUrl failed: " + Log.getStackTraceString(throwable));
+            callback.onResult(null);
+        }
+    }
+
+    @Nullable
+    private static WebView findFirstWebView(@Nullable View view) {
+        if (view instanceof WebView) {
+            return (WebView) view;
+        }
+        if (view instanceof ViewGroup viewGroup) {
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                WebView result = findFirstWebView(viewGroup.getChildAt(i));
+                if (result != null) return result;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Parses a raw string returned by {@link WebView#evaluateJavascript},
+     * stripping the JSON string quotes and unescaping Unicode ampersands.
+     */
+    @Nullable
+    private static String parseJsString(@Nullable String jsValue) {
+        if (jsValue == null || jsValue.equals("null") || jsValue.equals("\"\"")) {
+            return null;
+        }
+        if (jsValue.startsWith("\"") && jsValue.endsWith("\"")) {
+            jsValue = jsValue.substring(1, jsValue.length() - 1);
+        }
+        jsValue = jsValue != null ? jsValue.replace("\\u0026", "&") : "";
+        return jsValue.isEmpty() ? null : jsValue;
+    }
+
+    public interface GamClickUrlListener {
+        void onResult(@Nullable String clickUrl);
     }
 
     private com.google.android.gms.ads.AdSize[] mapToGamAdSizes(AdSize[] adSizes) {

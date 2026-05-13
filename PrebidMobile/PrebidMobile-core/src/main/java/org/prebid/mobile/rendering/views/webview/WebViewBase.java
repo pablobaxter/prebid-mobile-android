@@ -51,6 +51,9 @@ public class WebViewBase extends AdWebView implements AdAssetsLoadedListener {
     private boolean isClicked = false;
     protected boolean isMRAID;
 
+    private boolean contentReady = false;
+    private Runnable onContentReadyCallback;
+
     private String targetUrl;
 
     public WebViewBase(
@@ -88,8 +91,21 @@ public class WebViewBase extends AdWebView implements AdAssetsLoadedListener {
         mraidInterface.loading();
     }
 
+    public void setOnContentReadyCallback(Runnable callback) {
+        if (contentReady) {
+            callback.run();
+        } else {
+            onContentReadyCallback = callback;
+        }
+    }
+
     @Override
     public void adAssetsLoaded() {
+        contentReady = true;
+        if (onContentReadyCallback != null) {
+            onContentReadyCallback.run();
+            onContentReadyCallback = null;
+        }
 
         if (isMRAID) {
             getMRAIDInterface().prepareAndSendReady();
@@ -124,6 +140,7 @@ public class WebViewBase extends AdWebView implements AdAssetsLoadedListener {
         //inject MRAID here
         initLoad();
 
+        // TODO: This breaks one-part expand scrolling. Submit PR?
         setOnTouchListener(new OnTouchListener() {
 
             @Override
@@ -284,7 +301,7 @@ public class WebViewBase extends AdWebView implements AdAssetsLoadedListener {
 
     private String createAdHTML(String originalHtml) {
         String meta = buildViewportMetaTag();
-        String centerAdStyle = "<style type='text/css'>html,body {margin: 0;padding: 0;width: 100%;height: 100%;}html {display: table;}body {display: table-cell;vertical-align: middle;text-align: center;}</style>";
+        String centerAdStyle = "<style type='text/css'>html,body {margin: 0;padding: 0;width: 100%;height: 100%;}html {display: table;}body {display: block;vertical-align: middle;text-align: center;}</style>";
 
         originalHtml = "<html><head>" + meta
 

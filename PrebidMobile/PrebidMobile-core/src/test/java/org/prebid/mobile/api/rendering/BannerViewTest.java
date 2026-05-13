@@ -227,7 +227,7 @@ public class BannerViewTest {
 
         assertEquals(winningBid, mockBid);
         assertEquals(mockBidResponse, actualResponse);
-        verify(mockEventHandler, times(1)).requestAdWithBid(eq(mockBid));
+        verify(mockEventHandler, times(1)).requestAdWithBid(eq(mockBidResponse));
         assertTrue(bannerView.isPrimaryAdServerRequestInProgress());
     }
 
@@ -240,29 +240,29 @@ public class BannerViewTest {
         bannerView.setBidResponse(mockBidResponse);
 
         BidRequesterListener listener = getBidRequesterListener();
-        listener.onError(any());
+        listener.onError(new AdException(AdException.INTERNAL_ERROR, "Test"));
 
-        assertNull(bannerView.getWinnerBid());
-        assertNull(bannerView.getBidResponse());
-        verify(mockEventHandler, times(1)).requestAdWithBid(eq(null));
+        assertEquals(mockBid, bannerView.getWinnerBid());
+        assertEquals(mockBidResponse, bannerView.getBidResponse());
+        verify(mockEventHandler, times(1)).requestAdWithBid(org.mockito.Mockito.isNull());
     }
     //endregion ======================= BidRequestListener tests
 
     //region ================= BannerEventListener tests
     @Test
-    public void onPrebidSdkWinAndWinnerBidIsNull_AdRequestStatusIsFinishedNotifyErrorListener() {
+    public void onSdkWinAndWinnerBidIsNull_AdRequestStatusIsFinishedNotifyErrorListener() {
         changePrimaryAdServerRequestStatus(true);
         final BannerEventListener bannerEventListener = getBannerEventListener();
         bannerView.setBidResponse(null);
 
-        bannerEventListener.onPrebidSdkWin();
+        bannerEventListener.onSdkWin(null);
 
         verify(mockBannerListener, times(1)).onAdFailed(eq(bannerView), any(AdException.class));
         assertFalse(bannerView.isPrimaryAdServerRequestInProgress());
     }
 
     @Test
-    public void onPrebidSdkWin_AdRequestStatusIsFinishedDisplayAdView() {
+    public void onSdkWin_AdRequestStatusIsFinishedDisplayAdView() {
         changePrimaryAdServerRequestStatus(true);
         final BannerEventListener bannerEventListener = getBannerEventListener();
         final BidResponse mockBidResponse = mock(BidResponse.class);
@@ -273,7 +273,7 @@ public class BannerViewTest {
 
         bannerView.setBidResponse(mockBidResponse);
 
-        bannerEventListener.onPrebidSdkWin();
+        bannerEventListener.onSdkWin(null);
 
         assertFalse(bannerView.isPrimaryAdServerRequestInProgress());
     }
@@ -306,7 +306,7 @@ public class BannerViewTest {
     }
 
     @Test
-    public void onFailedAndWithWinnerBid_AdRequestStatusIsFinishedNotifyPrebidSdkWin() {
+    public void onFailedAndWithWinnerBid_AdRequestStatusIsFinishedNotifySdkWin() {
         changePrimaryAdServerRequestStatus(true);
 
         final BidResponse mockBidResponse = mock(BidResponse.class);
@@ -319,7 +319,7 @@ public class BannerViewTest {
         spyEventListener.onAdFailed(new AdException(AdException.INTERNAL_ERROR, "Test"));
 
         assertFalse(bannerView.isPrimaryAdServerRequestInProgress());
-        verify(spyEventListener, times(1)).onPrebidSdkWin();
+        verify(spyEventListener, times(1)).onSdkWin(any());
     }
 
     @Test

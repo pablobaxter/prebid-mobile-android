@@ -19,7 +19,7 @@ package org.prebid.mobile.rendering.bidding.interfaces;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import org.prebid.mobile.AdSize;
-import org.prebid.mobile.rendering.bidding.data.bid.Bid;
+import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
 import org.prebid.mobile.rendering.bidding.listeners.BannerEventListener;
 
 public interface BannerEventHandler {
@@ -28,9 +28,11 @@ public interface BannerEventHandler {
     void setBannerEventListener(@NonNull
                                         BannerEventListener bannerViewListener);
 
-    void requestAdWithBid(@Nullable Bid bid);
+    void requestAdWithBid(@Nullable BidResponse bid);
 
     void trackImpression();
+
+    void trackClick();
 
     void destroy();
 }
