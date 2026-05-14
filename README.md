@@ -47,7 +47,36 @@ The SDK orchestrates the following 9-step flow for each ad request:
 8. If a Prebid or Nativo bid wins, GAM serves a passback creative signaling the SDK to take over rendering
 9. The SDK rendering module renders the winning bid
 
+## Repackaging
+
+All public classes in this SDK are published under the `com.life360.prebidsdk` namespace rather than the upstream `org.prebid.mobile` namespace. The repackaging is done at build time using [JarJar](https://github.com/eed3si9n/jarjar-maven-plugin) — source files stay on `org.prebid.mobile` so the branch remains easy to merge with upstream Prebid releases.
+
+The rule is defined in [`PrebidMobile/jarjar-rules.txt`](PrebidMobile/jarjar-rules.txt):
+
+```
+rule org.prebid.mobile.** com.life360.prebidsdk.@1
+```
+
+It is applied by the `repackageReleaseAar` Gradle task (defined in [`PrebidMobile/repackage.gradle`](PrebidMobile/repackage.gradle) and wired into every module via [`PrebidMobile/android.gradle`](PrebidMobile/android.gradle)). The task runs after `bundleReleaseAar` and produces a `<module>-release-repackaged.aar` in each module's `build/outputs/aar/` directory with:
+
+- All `org.prebid.mobile.*` bytecode relocated to `com.life360.prebidsdk.*`
+- Kotlin metadata updated to match the new package names
+- `AndroidManifest.xml` class name references rewritten
+- Consumer ProGuard rules rewritten
+
+**Modules repackaged:**
+
+| Gradle module | Output artifact |
+|---|---|
+| `PrebidMobile-core` | `life360-prebid-mobile-sdk-core` |
+| `PrebidMobile` | `life360-prebid-mobile-sdk` |
+| `PrebidMobile-gamEventHandlers` | `life360-prebid-mobile-sdk-gam-event-handlers` |
+| `PrebidMobile-admobAdapters` | `life360-prebid-mobile-sdk-admob-adapters` |
+| `PrebidMobile-maxAdapters` | `life360-prebid-mobile-sdk-max-adapters` |
+
 ## Build from Source
+
+### Upstream (Prebid) build
 
 After cloning the repo, run the following from the root directory:
 
@@ -55,7 +84,20 @@ After cloning the repo, run the following from the root directory:
 scripts/buildPrebidMobile.sh
 ```
 
-This outputs the final library and packages a demo app.
+### Life360 (repackaged) build
+
+To produce the repackaged `com.life360.prebidsdk` artifacts for all modules, run:
+
+```
+scripts/buildPrebidMobile-life.sh
+```
+
+Output JARs and AARs are written to `generated/`. To skip JAR extraction and only produce the repackaged AARs, pass `-nojar`:
+
+```
+scripts/buildPrebidMobile-life.sh -nojar
+```
+
 
 ## Testing
 

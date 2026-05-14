@@ -11,7 +11,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 
-import com.nativo.prebidsdk.exposure.NativoCreativeVisibilityTracker;
+import com.life360.prebidsdk.exposure.NativoCreativeVisibilityTracker;
 
 import org.jetbrains.annotations.NotNull;
 import org.prebid.mobile.addendum.AdViewUtils;

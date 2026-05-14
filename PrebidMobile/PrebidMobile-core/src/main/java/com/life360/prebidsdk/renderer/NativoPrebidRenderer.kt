@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.renderer
+package com.life360.prebidsdk.renderer
 
 import android.content.Context
 import android.content.res.Resources
@@ -10,9 +10,9 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
-import com.nativo.prebidsdk.bid.NativoAdType
-import com.nativo.prebidsdk.bid.NativoBidExt
-import com.nativo.prebidsdk.utils.NativoUtils
+import com.life360.prebidsdk.bid.NativoAdType
+import com.life360.prebidsdk.bid.NativoBidExt
+import com.life360.prebidsdk.utils.NativoUtils
 import org.json.JSONObject
 import org.prebid.mobile.LogUtil
 import org.prebid.mobile.api.data.AdFormat

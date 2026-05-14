@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.bid
+package com.life360.prebidsdk.bid
 
 import org.json.JSONArray
 import org.json.JSONObject

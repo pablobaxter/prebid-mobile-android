@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.exposure
+package com.life360.prebidsdk.exposure
 
 import android.content.Context
 import android.os.Handler
@@ -12,8 +12,8 @@ import org.prebid.mobile.rendering.utils.exposure.ViewExposure
 import org.prebid.mobile.rendering.utils.exposure.ViewExposureChecker
 import org.prebid.mobile.rendering.utils.helpers.VisibilityChecker
 import org.prebid.mobile.rendering.views.webview.mraid.Views
-import com.nativo.prebidsdk.utils.NativoUtils
-import com.nativo.prebidsdk.utils.PausableCountDownTimer
+import com.life360.prebidsdk.utils.NativoUtils
+import com.life360.prebidsdk.utils.PausableCountDownTimer
 import java.lang.ref.WeakReference
 import java.util.Collections
 

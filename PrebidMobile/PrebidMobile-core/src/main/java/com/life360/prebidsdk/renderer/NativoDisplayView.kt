@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.renderer
+package com.life360.prebidsdk.renderer
 
 import android.content.Context
 import org.prebid.mobile.api.rendering.PrebidDisplayView

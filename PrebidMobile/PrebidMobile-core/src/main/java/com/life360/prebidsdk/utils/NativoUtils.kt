@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.utils
+package com.life360.prebidsdk.utils
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

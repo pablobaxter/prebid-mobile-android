@@ -1,4 +1,4 @@
-package com.nativo.prebidsdk.networking
+package com.life360.prebidsdk.networking
 
 import org.prebid.mobile.configuration.AdUnitConfiguration
 import org.prebid.mobile.rendering.networking.parameters.AdRequestInput

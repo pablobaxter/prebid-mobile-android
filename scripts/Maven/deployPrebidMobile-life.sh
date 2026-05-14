@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #################################
-# Update Maven Release folder
+# Deploy Nativo-Prebid SDK to Maven
 #################################
 
 # Merge Script
@@ -12,7 +12,7 @@ fi
 set -euo pipefail
 
 function echoX() {
-  echo -e "PREBID DEPLOY-LOG: $@"
+  echo -e "NATIVO DEPLOY-LOG: $@"
 }
 
 ####################################################
@@ -21,11 +21,11 @@ function echoX() {
 
 usage(){ cat <<'EOF'
 Usage:
-  deployPrebidMobile.sh --version <x.y.z | x.y.z-SNAPSHOT>
+  deployPrebidMobile-life.sh --version <x.y.z | x.y.z-SNAPSHOT>
 
 Examples:
-  ./deployPrebidMobile.sh --version x.y.z
-  ./deployPrebidMobile.sh --version x.y.z-SNAPSHOT
+  ./deployPrebidMobile-life.sh --version x.y.z
+  ./deployPrebidMobile-life.sh --version x.y.z-SNAPSHOT
 EOF
 }
 
@@ -56,7 +56,7 @@ if ! $IS_SNAPSHOT; then
   fi
 fi
 
-NAMESPACE="com.nativo"
+NAMESPACE="com.life360"
 
 RELEASE_URL="https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 SNAPSHOT_URL="https://central.sonatype.com/repository/maven-snapshots/"
@@ -75,7 +75,8 @@ rm -r "$DEPLOY_DIR_ABSOLUTE" || true
 mkdir "$DEPLOY_DIR_ABSOLUTE"
 
 cd ..
-bash ./buildPrebidMobile.sh
+# Use the Nativo life build script (repackaging + NativoPrebidSDK output names)
+bash ./buildPrebidMobile-life.sh
 
 cp -r ../generated/* "$DEPLOY_DIR_ABSOLUTE" || true
 
@@ -156,7 +157,7 @@ function load_maven_central_creds() {
   fi
 
   local EXPORTS;
-  
+
   EXPORTS="$(
     python3 - "$SERVER_ID" "$SETTINGS_PATH" <<'PY'
 import sys, os, xml.etree.ElementTree as ET, shlex
@@ -164,7 +165,7 @@ sid = sys.argv[1]
 path = os.path.expanduser(sys.argv[2])
 
 def warn(msg):
-    sys.stderr.write(f"PREBID DEPLOY-LOG: {msg}\n")
+    sys.stderr.write(f"NATIVO DEPLOY-LOG: {msg}\n")
     sys.stderr.flush()
 
 try:
@@ -254,26 +255,34 @@ function setupGPG() {
 
 setupGPG
 
-# Deploy each module one-by-one
-modules=("PrebidMobile-core" "PrebidMobile" "PrebidMobile-gamEventHandlers" "PrebidMobile-admobAdapters" "PrebidMobile-maxAdapters" "PrebidMobile-nextGenEventHandlers")
-extensions=("aar" "jar" "jar" "jar" "jar" "jar")
+# Deploy each module one-by-one.
+# modules array uses the Gradle project names (unchanged); OUTPUT_NAME applies the
+# PrebidMobile → NativoPrebidSDK rename used by buildPrebidMobile-life.sh for all
+# output artifact filenames (AAR, JAR, sources, javadoc).
+# POM templates are still looked up by Gradle project name (PrebidMobile-*-pom.xml).
+modules=("PrebidMobile-core" "PrebidMobile" "PrebidMobile-gamEventHandlers" "PrebidMobile-admobAdapters" "PrebidMobile-maxAdapters")
+extensions=("aar" "jar" "jar" "jar" "jar")
 
 for n in ${!modules[@]}; do
   echo -e "\n"
-  echoX "Deploying ${modules[$n]} on Maven..."
+  module="${modules[$n]}"
+  OUTPUT_NAME="${module/PrebidMobile/NativoPrebidSDK}"
+  echoX "Deploying ${OUTPUT_NAME} on Maven..."
 
   extension="${extensions[$n]}"
-  module="${modules[$n]}"
   if [ "$extension" == "aar" ]; then
-    compiledPath=$"$DEPLOY_DIR_ABSOLUTE/aar/${module}-release.aar"
+    compiledPath="$DEPLOY_DIR_ABSOLUTE/aar/${OUTPUT_NAME}-release.aar"
   else
-    compiledPath=$"$DEPLOY_DIR_ABSOLUTE/${module}.jar"
+    compiledPath="$DEPLOY_DIR_ABSOLUTE/${OUTPUT_NAME}.jar"
   fi
-  
-  # Configure the final POM file with correct version
+
+  # POM template is still keyed by Gradle project name
   pom="$(replace_version_placeholder "${BASE_DIR}/${module}-pom.xml" "${VERSION}")"
 
-  mavenDeploy $"$pom" "$compiledPath" $"$DEPLOY_DIR_ABSOLUTE/${module}-sources.jar" $"$DEPLOY_DIR_ABSOLUTE/${module}-javadoc.jar" "${DEPLOY_URL}"
+  mavenDeploy "$pom" "$compiledPath" \
+    "$DEPLOY_DIR_ABSOLUTE/${OUTPUT_NAME}-sources.jar" \
+    "$DEPLOY_DIR_ABSOLUTE/${OUTPUT_NAME}-javadoc.jar" \
+    "${DEPLOY_URL}"
 done
 
 # Reset variables and temp data

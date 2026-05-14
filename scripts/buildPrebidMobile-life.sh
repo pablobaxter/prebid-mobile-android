@@ -1,5 +1,5 @@
 #! /bin/bash
-# This script helps to build the Prebid products in the following steps:
+# This script builds the Nativo-Prebid SDK in the following steps:
 # It will ask you the version you're releasing
 # Check if it's the same as the one in the project's build.gradle
 # Package releases
@@ -25,7 +25,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 function echoX() {
-  echo -e "PREBID BUILDLOG: $@"
+  echo -e "Life360 Prebid SDK BUILDLOG: $@"
 }
 
 die() {
@@ -47,7 +47,7 @@ AARPATH=build/outputs/aar
 BUILD_LIBS_PATH=build/libs
 TEMPDIR=$OUTDIR/temp
 LIBDIR=$BASEDIR
-PREBIDCORE=PrebidMobile
+PREBIDCORE=Life360PrebidSDK
 
 echoX "$BASEDIR"
 
@@ -60,7 +60,7 @@ while read -r line; do
   fi
 done <$LIBDIR/build.gradle
 
-echoX "Start building Prebid Mobile version $RELEASE_VERSION"
+echoX "Start building Life360 Prebid SDK version $RELEASE_VERSION"
 
 ###########################
 # Prepare
@@ -97,14 +97,17 @@ mkdir "$OUTDIR/aar"
 for n in ${!modules[@]}; do
 
   echo -e "\n"
-  echoX "Assembling ${modules[$n]}"
+  # Derive the public output name: PrebidMobile[-suffix] → Life360PrebidSDK[-suffix]
+  OUTPUT_NAME="${modules[$n]/PrebidMobile/Life360PrebidSDK}"
+  echoX "Assembling and repackaging ${OUTPUT_NAME}"
   cd $LIBDIR
-  # clean existing build results, exclude test task, and assemble new release build
-  (./gradlew -i --no-daemon ${modules[$n]}:assembleRelease >$LOGPATH/build.log 2>&1 || die "Build failed, check log in $LOGPATH/build.log")
+  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.life360.prebidsdk.**
+  (./gradlew -i --no-daemon ${modules[$n]}:repackageReleaseAar >$LOGPATH/build.log 2>&1 || die "Build failed, check log in $LOGPATH/build.log")
 
   if [ "$1" != "-nojar" ]; then
-    # Make folder generated/temp/output
-    echoX "Packaging ${modules[$n]}"
+    # Make folder generated/temp/output (remove any leftovers from a failed prior run)
+    echoX "Packaging ${OUTPUT_NAME}"
+    rm -rf $TEMPDIR
     mkdir $TEMPDIR
     cd $TEMPDIR
     mkdir output
@@ -112,8 +115,9 @@ for n in ${!modules[@]}; do
     AARPATH_ABSOLUTE="${projectPaths[$n]}/$AARPATH"
 
     cd $AARPATH_ABSOLUTE
-    cp ${modules[$n]}-release.aar $OUTDIR/aar
-    unzip -q -o ${modules[$n]}-release.aar
+    # Copy repackaged AAR under the public output name
+    cp ${modules[$n]}-release-repackaged.aar $OUTDIR/aar/${OUTPUT_NAME}-release.aar
+    unzip -q -o ${modules[$n]}-release-repackaged.aar
     cd $TEMPDIR/output
 
     # Extracting the Contents of a JAR File
@@ -133,19 +137,19 @@ for n in ${!modules[@]}; do
     cp -r $AARPATH_ABSOLUTE/META-INF/. $TEMPDIR/output/META-INF/
     # rm -rf $AARPATH_ABSOLUTE/META-INF
     
-    rm -r $TEMPDIR/output/META-INF/com
+    rm -rf $TEMPDIR/output/META-INF/com
 
-    # Creating a JAR File
-    if [ "${modules[$n]}" == "PrebidMobile-maxAdapters" ]; then
-      jar cf ${modules[$n]}.jar org* com* META-INF*
-    elif [ "${modules[$n]}" == "PrebidMobile" ]; then
-      jar cf ${modules[$n]}.jar META-INF*
+    # Creating a JAR File (output named Life360PrebidSDK-*)
+    # After repackaging, all org.prebid.mobile.* classes are now com.life360.prebidsdk.*
+    # so we glob com* instead of org*. Life360PrebidSDK (wrapper) has no classes of its own.
+    if [ "${modules[$n]}" == "PrebidMobile" ]; then
+      jar cf ${OUTPUT_NAME}.jar META-INF*
     else
-      jar cf ${modules[$n]}.jar org* META-INF*
+      jar cf ${OUTPUT_NAME}.jar com* META-INF*
     fi
 
-    # move jar into a result direcotory
-    mv ${modules[$n]}.jar $OUTDIR
+    # move jar into result directory
+    mv ${OUTPUT_NAME}.jar $OUTDIR
 
     cd $LIBDIR
 
@@ -154,12 +158,15 @@ for n in ${!modules[@]}; do
     # ./gradlew -i --no-daemon ${modules[$n]}:javadocJar >$LOGPATH/javadoc.log 2>&1 || die "Build Javadoc failed, check log in $LOGPATH/javadoc.log"
 
     # Sources
-    echoX "Preparing ${modules[$n]} Sources"
+    echoX "Preparing ${OUTPUT_NAME} sources"
     ./gradlew -i --no-daemon ${modules[$n]}:sourcesJar >$LOGPATH/sources.log 2>&1 || die "Build Sources failed, check log in $LOGPATH/sources.log"
 
-    # copy sources and javadoc into a result direcotory
+    # copy sources and javadoc into result directory, then rename from PrebidMobile-* to Life360PrebidSDK-*
     BUILD_LIBS_PATH_ABSOLUTE="${projectPaths[$n]}/$BUILD_LIBS_PATH"
     cp -a $BUILD_LIBS_PATH_ABSOLUTE/. $OUTDIR/
+    for f in "$OUTDIR"/${modules[$n]}-*.jar; do
+      [ -f "$f" ] && mv "$f" "${f/${modules[$n]}/${OUTPUT_NAME}}"
+    done
     # clean tmp dir
     rm -r $TEMPDIR
   fi
@@ -197,6 +204,8 @@ POM_OUTDIR="$OUTDIR/pom"
 mkdir "$POM_OUTDIR"
 
 for module in "${modules[@]}"; do
+  # Output POM uses the public Life360PrebidSDK-* name
+  POM_OUTPUT_NAME="${module/PrebidMobile/Life360PrebidSDK}"
   TEMPLATE="$POM_TEMPLATE_DIR/${module}-pom.xml"
   if [ -f "$TEMPLATE" ]; then
     awk -v VER="$RELEASE_VERSION" '
@@ -204,8 +213,8 @@ for module in "${modules[@]}"; do
         gsub(/<version>[[:space:]]*\$\{revision\}[[:space:]]*<\/version>/, "<version>" VER "<\/version>")
         gsub(/<version>[[:space:]]*\$\{project\.version\}[[:space:]]*<\/version>/, "<version>" VER "<\/version>")
         print }
-    ' "$TEMPLATE" > "$POM_OUTDIR/${module}-${RELEASE_VERSION}.pom"
-    echoX "  Generated $POM_OUTDIR/${module}-${RELEASE_VERSION}.pom"
+    ' "$TEMPLATE" > "$POM_OUTDIR/${POM_OUTPUT_NAME}-${RELEASE_VERSION}.pom"
+    echoX "  Generated $POM_OUTDIR/${POM_OUTPUT_NAME}-${RELEASE_VERSION}.pom"
   else
     echoX "  WARNING: No POM template found for ${module} at $TEMPLATE"
   fi
@@ -214,5 +223,5 @@ done
 #######
 # End
 #######
-echoX "Please find Prebid Mobile product in $OUTDIR"
+echoX "Please find Life360 Prebid SDK artifacts in $OUTDIR"
 echo -e "\n${GREEN}Done!${NC} \n"

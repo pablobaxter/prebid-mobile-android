@@ -1,6 +1,6 @@
-package com.nativo.prebidsdk.bid
+package com.life360.prebidsdk.bid
 
-import com.nativo.prebidsdk.renderer.NativoPrebidRenderer
+import com.life360.prebidsdk.renderer.NativoPrebidRenderer
 import org.prebid.mobile.rendering.bidding.data.bid.Bid
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse
 import org.prebid.mobile.rendering.bidding.data.bid.Seatbid
