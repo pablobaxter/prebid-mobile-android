@@ -25,7 +25,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 function echoX() {
-  echo -e "NATIVO BUILDLOG: $@"
+  echo -e "Life360 Prebid SDK BUILDLOG: $@"
 }
 
 die() {
@@ -60,7 +60,7 @@ while read -r line; do
   fi
 done <$LIBDIR/build.gradle
 
-echoX "Start building Nativo-Prebid SDK version $RELEASE_VERSION"
+echoX "Start building Life360 Prebid SDK version $RELEASE_VERSION"
 
 ###########################
 # Prepare
@@ -223,5 +223,5 @@ done
 #######
 # End
 #######
-echoX "Please find Nativo-Prebid SDK artifacts in $OUTDIR"
+echoX "Please find Life360 Prebid SDK artifacts in $OUTDIR"
 echo -e "\n${GREEN}Done!${NC} \n"
