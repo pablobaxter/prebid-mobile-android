@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.life360</groupId>
-    <artifactId>life360-prebid-mobile-sdk-core</artifactId>
+    <artifactId>prebid-sdk-core</artifactId>
     <version>${revision}</version>
     <packaging>aar</packaging>
 
-    <name>Nativo Prebid Mobile Android SDK</name>
-    <description>Life360 Ads fork of Prebid Mobile Android SDK</description>
+    <name>Life360 Prebid Android SDK</name>
+    <description>Life360 Ads fork of the Prebid Mobile Android SDK</description>
     <url>https://github.com/life360-oss/nativo-prebid-sdk-android</url>
 
     <licenses>
