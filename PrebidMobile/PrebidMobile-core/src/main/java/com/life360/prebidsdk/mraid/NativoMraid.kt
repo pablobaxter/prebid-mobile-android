@@ -12,7 +12,7 @@ const val MRAID_DEBUG_SCRIPT: String = """
 
         const keepLogsToConsole = true
 
-        const logMRAIDToConsole = false
+        const logMRAIDToConsole = true
         const logMRAIDToHandler = true
 
         if (logMRAIDToConsole || logMRAIDToHandler) {
