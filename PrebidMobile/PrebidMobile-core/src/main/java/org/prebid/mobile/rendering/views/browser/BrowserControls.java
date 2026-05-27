@@ -32,7 +32,7 @@ import android.widget.TableRow;
 import androidx.annotation.VisibleForTesting;
 
 import org.prebid.mobile.LogUtil;
-import com.life360.prebidsdk.core.R;
+import com.life360.ads.core.R;
 import org.prebid.mobile.rendering.utils.helpers.ExternalViewerUtils;
 import org.prebid.mobile.rendering.utils.helpers.Utils;
 

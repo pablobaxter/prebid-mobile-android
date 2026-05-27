@@ -1,5 +1,5 @@
 #! /bin/bash
-# This script builds the Nativo-Prebid SDK in the following steps:
+# This script builds the  Life360 Ads SDK in the following steps:
 # It will ask you the version you're releasing
 # Check if it's the same as the one in the project's build.gradle
 # Package releases
@@ -25,7 +25,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 function echoX() {
-  echo -e "Life360 Prebid SDK BUILDLOG: $@"
+  echo -e "Life360 Ads SDK BUILDLOG: $@"
 }
 
 die() {
@@ -60,7 +60,7 @@ while read -r line; do
   fi
 done <$LIBDIR/build.gradle
 
-echoX "Start building Life360 Prebid SDK version $RELEASE_VERSION"
+echoX "Start building  Life360 Ads SDK version $RELEASE_VERSION"
 
 ###########################
 # Prepare
@@ -101,7 +101,7 @@ for n in ${!modules[@]}; do
   OUTPUT_NAME="${modules[$n]/PrebidMobile/Life360PrebidSDK}"
   echoX "Assembling and repackaging ${OUTPUT_NAME}"
   cd $LIBDIR
-  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.life360.prebidsdk.**
+  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.life360.ads.**
   (./gradlew -i --no-daemon ${modules[$n]}:repackageReleaseAar >$LOGPATH/build.log 2>&1 || die "Build failed, check log in $LOGPATH/build.log")
 
   if [ "$1" != "-nojar" ]; then
@@ -140,7 +140,7 @@ for n in ${!modules[@]}; do
     rm -rf $TEMPDIR/output/META-INF/com
 
     # Creating a JAR File (output named Life360PrebidSDK-*)
-    # After repackaging, all org.prebid.mobile.* classes are now com.life360.prebidsdk.*
+    # After repackaging, all org.prebid.mobile.* classes are now com.life360.ads.*
     # so we glob com* instead of org*. Life360PrebidSDK (wrapper) has no classes of its own.
     if [ "${modules[$n]}" == "PrebidMobile" ]; then
       jar cf ${OUTPUT_NAME}.jar META-INF*
@@ -223,5 +223,5 @@ done
 #######
 # End
 #######
-echoX "Please find Life360 Prebid SDK artifacts in $OUTDIR"
+echoX "Please find  Life360 Ads SDK artifacts in $OUTDIR"
 echo -e "\n${GREEN}Done!${NC} \n"

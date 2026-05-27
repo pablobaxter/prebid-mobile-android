@@ -1,4 +1,4 @@
-package com.life360.prebidsdk.bid
+package com.life360.ads.bid
 
 import org.json.JSONObject
 import org.prebid.mobile.rendering.bidding.data.bid.Bid

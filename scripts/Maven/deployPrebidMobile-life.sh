@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #################################
-# Deploy Nativo-Prebid SDK to Maven
+# Deploy  Life360 Ads SDK to Maven
 #################################
 
 # Merge Script

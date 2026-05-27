@@ -10,7 +10,7 @@ import org.prebid.mobile.PrebidMobile;
 import org.prebid.mobile.api.data.Position;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
 import org.prebid.mobile.configuration.PBSConfig;
-import com.life360.prebidsdk.core.BuildConfig;
+import com.life360.ads.core.BuildConfig;
 
 /**
  * A class responsible for parsing "prebidmobilesdk" pass through type from bid response.

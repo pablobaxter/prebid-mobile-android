@@ -9,7 +9,7 @@
     <version>${revision}</version>
     <packaging>aar</packaging>
 
-    <name>Life360 Prebid Android SDK</name>
+    <name> Life360 Ads Android SDK</name>
     <description>Life360 Ads fork of the Prebid Mobile Android SDK</description>
     <url>https://github.com/life360-oss/nativo-prebid-sdk-android</url>
 

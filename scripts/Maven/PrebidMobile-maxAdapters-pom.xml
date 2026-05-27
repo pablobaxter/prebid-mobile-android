@@ -9,7 +9,7 @@
     <version>${revision}</version>
     <packaging>jar</packaging>
 
-    <name>Life360 Prebid Android SDK – MAX Adapters</name>
+    <name> Life360 Ads Android SDK – MAX Adapters</name>
     <description>Life360 Ads fork of the Prebid Mobile Android SDK</description>
     <url>https://github.com/life360-oss/nativo-prebid-sdk-android</url>
 
@@ -52,7 +52,7 @@
     <dependencies>
         <dependency>
             <groupId>com.life360</groupId>
-            <artifactId>life360-prebid-sdk</artifactId>
+            <artifactId>life360(-)ads-sdk</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>

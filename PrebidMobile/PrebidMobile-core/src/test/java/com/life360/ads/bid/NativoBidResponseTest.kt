@@ -1,4 +1,4 @@
-package com.life360.prebidsdk.bid
+package com.life360.ads.bid
 
 import org.json.JSONArray
 import org.json.JSONObject

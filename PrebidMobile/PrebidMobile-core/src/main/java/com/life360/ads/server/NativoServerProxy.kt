@@ -1,7 +1,7 @@
-package com.life360.prebidsdk.server
+package com.life360.ads.server
 
-import com.life360.prebidsdk.bid.NativoBidResponse
-import com.life360.prebidsdk.networking.NativoBidRequester
+import com.life360.ads.bid.NativoBidResponse
+import com.life360.ads.networking.NativoBidRequester
 import org.prebid.mobile.LogUtil
 import org.prebid.mobile.api.exceptions.AdException
 import org.prebid.mobile.configuration.AdUnitConfiguration

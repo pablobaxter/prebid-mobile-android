@@ -1,6 +1,6 @@
-# Nativo-Prebid SDK (Android)
+# Life360 Ads SDK (Android)
 
-The Nativo-Prebid SDK is an extension of the open-source [Prebid Mobile Android](https://github.com/prebid/prebid-mobile-android) project. It adds Nativo as a competing demand source alongside Prebid, with the winning bid sent to Google Ad Manager (GAM) for final decisioning. For base Prebid Mobile concepts and API documentation, refer to the [official Prebid Mobile documentation](https://docs.prebid.org/prebid-mobile/pbm-api/android/code-integration-android.html).
+The  Life360 Ads SDK is an extension of the open-source [Prebid Mobile Android](https://github.com/prebid/prebid-mobile-android) project. It adds Nativo as a competing demand source alongside Prebid, with the winning bid sent to Google Ad Manager (GAM) for final decisioning. For base Prebid Mobile concepts and API documentation, refer to the [official Prebid Mobile documentation](https://docs.prebid.org/prebid-mobile/pbm-api/android/code-integration-android.html).
 
 ## Features
 
@@ -49,17 +49,17 @@ The SDK orchestrates the following 9-step flow for each ad request:
 
 ## Repackaging
 
-All public classes in this SDK are published under the `com.life360.prebidsdk` namespace rather than the upstream `org.prebid.mobile` namespace. The repackaging is done at build time using [JarJar](https://github.com/eed3si9n/jarjar-maven-plugin) — source files stay on `org.prebid.mobile` so the branch remains easy to merge with upstream Prebid releases.
+All public classes in this SDK are published under the `com.life360.ads` namespace rather than the upstream `org.prebid.mobile` namespace. The repackaging is done at build time using [JarJar](https://github.com/eed3si9n/jarjar-maven-plugin) — source files stay on `org.prebid.mobile` so the branch remains easy to merge with upstream Prebid releases.
 
 The rule is defined in [`PrebidMobile/jarjar-rules.txt`](PrebidMobile/jarjar-rules.txt):
 
 ```
-rule org.prebid.mobile.** com.life360.prebidsdk.@1
+rule org.prebid.mobile.** com.life360.ads.@1
 ```
 
 It is applied by the `repackageReleaseAar` Gradle task (defined in [`PrebidMobile/repackage.gradle`](PrebidMobile/repackage.gradle) and wired into every module via [`PrebidMobile/android.gradle`](PrebidMobile/android.gradle)). The task runs after `bundleReleaseAar` and produces a `<module>-release-repackaged.aar` in each module's `build/outputs/aar/` directory with:
 
-- All `org.prebid.mobile.*` bytecode relocated to `com.life360.prebidsdk.*`
+- All `org.prebid.mobile.*` bytecode relocated to `com.life360.ads.*`
 - Kotlin metadata updated to match the new package names
 - `AndroidManifest.xml` class name references rewritten
 - Consumer ProGuard rules rewritten
@@ -68,11 +68,11 @@ It is applied by the `repackageReleaseAar` Gradle task (defined in [`PrebidMobil
 
 | Gradle module | Output artifact |
 |---|---|
-| `PrebidMobile-core` | `life360-prebid-mobile-sdk-core` |
-| `PrebidMobile` | `life360-prebid-mobile-sdk` |
-| `PrebidMobile-gamEventHandlers` | `life360-prebid-mobile-sdk-gam-event-handlers` |
-| `PrebidMobile-admobAdapters` | `life360-prebid-mobile-sdk-admob-adapters` |
-| `PrebidMobile-maxAdapters` | `life360-prebid-mobile-sdk-max-adapters` |
+| `PrebidMobile-core` | `life360(-)ads-core` |
+| `PrebidMobile` | `life360(-)ads-sdk` |
+| `PrebidMobile-gamEventHandlers` | `life360(-)ads-gam-event-handlers` |
+| `PrebidMobile-admobAdapters` | `life360(-)ads-admob-adapters` |
+| `PrebidMobile-maxAdapters` | `life360(-)ads-max-adapters` |
 
 ## Build from Source
 
@@ -86,7 +86,7 @@ scripts/buildPrebidMobile.sh
 
 ### Life360 (repackaged) build
 
-To produce the repackaged `com.life360.prebidsdk` artifacts for all modules, run:
+To produce the repackaged `com.life360.ads` artifacts for all modules, run:
 
 ```
 scripts/buildPrebidMobile-life.sh
@@ -109,10 +109,10 @@ scripts/testPrebidMobile.sh
 
 ## FAQ
 
-**Does the Nativo-Prebid SDK use OMID / OMSDK?**
+**Does the  Life360 Ads SDK use OMID / OMSDK?**
 
 Yes, but the SDK is not currently IAB certified. Without certification, the demand-side benefits of OMID measurement are not fully realized unless the publisher obtains their own certification.
 
-**Does the Nativo-Prebid SDK support multi-format bidding?**
+**Does the  Life360 Ads SDK support multi-format bidding?**
 
 Not currently. The SDK uses Prebid Rendering (rather than Bidding-only with GAM rendering), which does not support multi-format bidding at this time. This is an area of future exploration.
