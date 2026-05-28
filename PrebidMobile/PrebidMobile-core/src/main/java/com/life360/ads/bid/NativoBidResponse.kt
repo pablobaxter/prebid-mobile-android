@@ -1,6 +1,6 @@
 package com.life360.ads.bid
 
-import com.life360.ads.renderer.NativoPrebidRenderer
+import com.life360.ads.renderer.NativoRenderer
 import org.prebid.mobile.rendering.bidding.data.bid.Bid
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse
 import org.prebid.mobile.rendering.bidding.data.bid.Seatbid
@@ -59,7 +59,7 @@ class NativoBidResponse(
 
     private fun applyRendererMeta(bid: Bid) {
         val meta = bid.prebid.meta
-        meta[KEY_RENDERER_NAME] = NativoPrebidRenderer.NAME
-        meta[KEY_RENDERER_VERSION] = NativoPrebidRenderer.VERSION
+        meta[KEY_RENDERER_NAME] = NativoRenderer.NAME
+        meta[KEY_RENDERER_VERSION] = NativoRenderer.VERSION
     }
 }

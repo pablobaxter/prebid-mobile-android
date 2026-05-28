@@ -28,10 +28,10 @@ import org.prebid.mobile.rendering.bidding.interfaces.InterstitialControllerList
 import org.prebid.mobile.rendering.bidding.listeners.DisplayVideoListener
 import org.prebid.mobile.rendering.bidding.listeners.DisplayViewListener
 
-class NativoPrebidRenderer : PrebidMobilePluginRenderer {
+class NativoRenderer : PrebidMobilePluginRenderer {
 
-    companion object {
-        private const val TAG = "NativoPrebidRenderer"
+    companion object Companion {
+        private const val TAG = "NativoRenderer"
         const val NAME = "NativoRenderer"
         const val VERSION = "1.0.0"
     }
