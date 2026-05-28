@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.prebid.mobile.api.data.Position;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
-import com.life360.prebidsdk.core.BuildConfig;
+import com.life360.ads.core.BuildConfig;
 
 import static org.junit.Assert.*;
 

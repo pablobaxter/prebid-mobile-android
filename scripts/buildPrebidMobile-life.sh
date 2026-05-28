@@ -1,5 +1,5 @@
 #! /bin/bash
-# This script builds the Nativo-Prebid SDK in the following steps:
+# This script builds the  Life360 Ads SDK in the following steps:
 # It will ask you the version you're releasing
 # Check if it's the same as the one in the project's build.gradle
 # Package releases
@@ -25,7 +25,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 function echoX() {
-  echo -e "Life360 Prebid SDK BUILDLOG: $@"
+  echo -e "Life360 Ads SDK BUILDLOG: $@"
 }
 
 die() {
@@ -47,7 +47,6 @@ AARPATH=build/outputs/aar
 BUILD_LIBS_PATH=build/libs
 TEMPDIR=$OUTDIR/temp
 LIBDIR=$BASEDIR
-PREBIDCORE=Life360PrebidSDK
 
 echoX "$BASEDIR"
 
@@ -60,7 +59,7 @@ while read -r line; do
   fi
 done <$LIBDIR/build.gradle
 
-echoX "Start building Life360 Prebid SDK version $RELEASE_VERSION"
+echoX "Start building  Life360 Ads SDK version $RELEASE_VERSION"
 
 ###########################
 # Prepare
@@ -97,11 +96,11 @@ mkdir "$OUTDIR/aar"
 for n in ${!modules[@]}; do
 
   echo -e "\n"
-  # Derive the public output name: PrebidMobile[-suffix] → Life360PrebidSDK[-suffix]
-  OUTPUT_NAME="${modules[$n]/PrebidMobile/Life360PrebidSDK}"
+  # Derive the public output name: PrebidMobile[-suffix] → Life360AdsSDK[-suffix]
+  OUTPUT_NAME="${modules[$n]/PrebidMobile/Life360AdsSDK}"
   echoX "Assembling and repackaging ${OUTPUT_NAME}"
   cd $LIBDIR
-  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.life360.prebidsdk.**
+  # Build the release AAR and run JarJar to relocate org.prebid.mobile.** → com.life360.ads.**
   (./gradlew -i --no-daemon ${modules[$n]}:repackageReleaseAar >$LOGPATH/build.log 2>&1 || die "Build failed, check log in $LOGPATH/build.log")
 
   if [ "$1" != "-nojar" ]; then
@@ -139,9 +138,9 @@ for n in ${!modules[@]}; do
     
     rm -rf $TEMPDIR/output/META-INF/com
 
-    # Creating a JAR File (output named Life360PrebidSDK-*)
-    # After repackaging, all org.prebid.mobile.* classes are now com.life360.prebidsdk.*
-    # so we glob com* instead of org*. Life360PrebidSDK (wrapper) has no classes of its own.
+    # Creating a JAR File (output named Life360AdsSDK-*)
+    # After repackaging, all org.prebid.mobile.* classes are now com.life360.ads.*
+    # so we glob com* instead of org*. Life360AdsSDK (wrapper) has no classes of its own.
     if [ "${modules[$n]}" == "PrebidMobile" ]; then
       jar cf ${OUTPUT_NAME}.jar META-INF*
     else
@@ -161,7 +160,7 @@ for n in ${!modules[@]}; do
     echoX "Preparing ${OUTPUT_NAME} sources"
     ./gradlew -i --no-daemon ${modules[$n]}:sourcesJar >$LOGPATH/sources.log 2>&1 || die "Build Sources failed, check log in $LOGPATH/sources.log"
 
-    # copy sources and javadoc into result directory, then rename from PrebidMobile-* to Life360PrebidSDK-*
+    # copy sources and javadoc into result directory, then rename from PrebidMobile-* to Life360AdsSDK-*
     BUILD_LIBS_PATH_ABSOLUTE="${projectPaths[$n]}/$BUILD_LIBS_PATH"
     cp -a $BUILD_LIBS_PATH_ABSOLUTE/. $OUTDIR/
     for f in "$OUTDIR"/${modules[$n]}-*.jar; do
@@ -204,8 +203,8 @@ POM_OUTDIR="$OUTDIR/pom"
 mkdir "$POM_OUTDIR"
 
 for module in "${modules[@]}"; do
-  # Output POM uses the public Life360PrebidSDK-* name
-  POM_OUTPUT_NAME="${module/PrebidMobile/Life360PrebidSDK}"
+  # Output POM uses the public Life360AdsSDK-* name
+  POM_OUTPUT_NAME="${module/PrebidMobile/Life360AdsSDK}"
   TEMPLATE="$POM_TEMPLATE_DIR/${module}-pom.xml"
   if [ -f "$TEMPLATE" ]; then
     awk -v VER="$RELEASE_VERSION" '
@@ -223,5 +222,5 @@ done
 #######
 # End
 #######
-echoX "Please find Life360 Prebid SDK artifacts in $OUTDIR"
+echoX "Please find  Life360 Ads SDK artifacts in $OUTDIR"
 echo -e "\n${GREEN}Done!${NC} \n"

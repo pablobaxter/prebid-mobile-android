@@ -162,7 +162,7 @@ public class DemandRequestBuilder {
         JSONObject ext = new JSONObject();
         JSONObject prebid = new JSONObject();
         prebid.put("version", "1.0");
-        prebid.put("source", "prebid-mobile");
+        prebid.put("source", "life360-ads-sdk");
         ext.put("prebid", prebid);
         object.put("ext", ext);
 

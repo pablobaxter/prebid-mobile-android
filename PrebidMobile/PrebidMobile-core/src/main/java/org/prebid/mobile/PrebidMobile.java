@@ -29,7 +29,7 @@ import org.prebid.mobile.api.data.InitializationStatus;
 import org.prebid.mobile.api.rendering.pluginrenderer.PrebidMobilePluginRegister;
 import org.prebid.mobile.api.rendering.pluginrenderer.PrebidMobilePluginRenderer;
 import org.prebid.mobile.configuration.PBSConfig;
-import com.life360.prebidsdk.core.BuildConfig;
+import com.life360.ads.core.BuildConfig;
 import org.prebid.mobile.rendering.listeners.SdkInitializationListener;
 import org.prebid.mobile.rendering.mraid.MraidEnv;
 import org.prebid.mobile.rendering.sdk.InitializationNotifier;
@@ -71,7 +71,7 @@ public class PrebidMobile {
     /**
      * SDK name provided for MRAID_ENV in {@link MraidEnv}
      */
-    public static final String SDK_NAME = "nativo-prebid-sdk-rendering";
+    public static final String SDK_NAME = "life360-ads-sdk";
     /**
      * Currently implemented MRAID version.
      */

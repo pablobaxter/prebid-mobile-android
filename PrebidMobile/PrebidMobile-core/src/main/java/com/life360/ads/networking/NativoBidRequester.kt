@@ -1,4 +1,4 @@
-package com.life360.prebidsdk.networking
+package com.life360.ads.networking
 
 import android.os.AsyncTask
 import org.prebid.mobile.LogUtil
@@ -20,8 +20,8 @@ import org.prebid.mobile.rendering.networking.urlBuilder.URLBuilder
 import org.prebid.mobile.rendering.sdk.PrebidContextHolder
 import org.prebid.mobile.rendering.utils.helpers.ExternalViewerUtils
 import org.prebid.mobile.rendering.utils.helpers.AppInfoManager
-import com.life360.prebidsdk.bid.NativoBidExt
-import com.life360.prebidsdk.bid.NativoBidResponse
+import com.life360.ads.bid.NativoBidExt
+import com.life360.ads.bid.NativoBidResponse
 import java.util.concurrent.atomic.AtomicBoolean
 
 class NativoBidRequester : ExternalBidRequester {

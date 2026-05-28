@@ -1,4 +1,4 @@
-package com.life360.prebidsdk.utils
+package com.life360.ads.utils
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

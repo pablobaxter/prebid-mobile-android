@@ -35,7 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
-import com.life360.prebidsdk.core.R;
+import com.life360.ads.core.R;
 import org.prebid.mobile.rendering.interstitial.AdBaseDialog;
 import org.prebid.mobile.rendering.interstitial.rewarded.RewardedCompletionRules;
 import org.prebid.mobile.rendering.interstitial.rewarded.RewardedExt;

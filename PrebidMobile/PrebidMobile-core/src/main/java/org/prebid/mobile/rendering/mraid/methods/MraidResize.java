@@ -31,7 +31,7 @@ import androidx.annotation.DrawableRes;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.prebid.mobile.LogUtil;
-import com.life360.prebidsdk.core.R;
+import com.life360.ads.core.R;
 import org.prebid.mobile.rendering.mraid.handler.FetchPropertiesHandler;
 import org.prebid.mobile.rendering.utils.helpers.Dips;
 import org.prebid.mobile.rendering.utils.helpers.Utils;

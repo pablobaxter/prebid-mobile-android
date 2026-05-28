@@ -3,7 +3,7 @@ apply from: '../publisher.gradle'
 apply from: '../tests.gradle'
 
 android {
-    namespace "com.life360.prebidsdk.eventhandlers"
+    namespace "com.life360.ads.eventhandlers"
     defaultConfig {
         minSdkVersion 23
     }

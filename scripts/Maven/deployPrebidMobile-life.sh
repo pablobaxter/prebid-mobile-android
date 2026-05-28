@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #################################
-# Deploy Nativo-Prebid SDK to Maven
+# Deploy  Life360 Ads SDK to Maven
 #################################
 
 # Merge Script
@@ -266,7 +266,7 @@ extensions=("aar" "jar" "jar" "jar" "jar")
 for n in ${!modules[@]}; do
   echo -e "\n"
   module="${modules[$n]}"
-  OUTPUT_NAME="${module/PrebidMobile/NativoPrebidSDK}"
+  OUTPUT_NAME="${module/PrebidMobile/Life360AdsSDK}"
   echoX "Deploying ${OUTPUT_NAME} on Maven..."
 
   extension="${extensions[$n]}"

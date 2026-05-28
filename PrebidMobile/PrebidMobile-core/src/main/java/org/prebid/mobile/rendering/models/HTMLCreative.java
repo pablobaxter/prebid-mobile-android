@@ -22,7 +22,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import androidx.annotation.VisibleForTesting;
 
-import com.life360.prebidsdk.exposure.NativoCreativeVisibilityTracker;
+import com.life360.ads.exposure.NativoCreativeVisibilityTracker;
 
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.api.data.AdFormat;
