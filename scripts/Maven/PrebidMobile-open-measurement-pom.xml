@@ -27,6 +27,13 @@
 
     <developers>
         <developer>
+            <name>Life360 Ads Team</name>
+            <email>ads@life360.com</email>
+            <organization>Life360, Inc.</organization>
+            <organizationUrl>https://ads.life360.com</organizationUrl>
+        </developer>
+
+        <developer>
             <name>AppNexus Mobile Team</name>
             <email>sdk@appnexus.com</email>
             <organization>AppNexus, Inc.</organization>

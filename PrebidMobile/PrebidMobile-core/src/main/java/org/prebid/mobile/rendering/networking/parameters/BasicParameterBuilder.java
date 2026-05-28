@@ -68,7 +68,7 @@ public class BasicParameterBuilder extends ParameterBuilder {
             "video/webm",
             "video/mkv"};
 
-    static final String DISPLAY_MANAGER_VALUE = "prebid-mobile";
+    static final String DISPLAY_MANAGER_VALUE = "life360-ads-sdk";
     static final String KEY_OM_PARTNER_NAME = "omidpn";
     static final String KEY_OM_PARTNER_VERSION = "omidpv";
     static final String KEY_DEEPLINK_PLUS = "dlp";

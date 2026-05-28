@@ -5,10 +5,10 @@ The  Life360 Ads SDK is an extension of the open-source [Prebid Mobile Android](
 ## Features
 
 ### Nativo Ad Request Pipeline
-An additional bid request is sent to Nativo as a demand source competing alongside Prebid. The SDK compares all bids and sends the winning bid to GAM.
+An additional bid request is sent to Nativo as a demand source competing alongside Prebid. The SDK compares all bids and sends the winning bid to GAM, or other ad server.
 
 ### Owned & Operated Ads
-Direct ad campaigns are supported via an `isOwnedOperated` flag. When set, the ad bypasses the auction and is rendered immediately without going through Prebid Server or GAM.
+Direct ad campaigns through Nativo are supported via an `isOwnedOperated` flag. When set, the ad bypasses the auction and is rendered immediately without going through Prebid Server or GAM.
 
 ### Nativo Ad Types
 Rendering support for all unique Nativo ad formats, including types not natively supported by Prebid.
@@ -42,9 +42,9 @@ The SDK orchestrates the following 9-step flow for each ad request:
 3. SDK sends a bid request to Prebid Server
 4. Prebid Server runs the header bidding auction across configured demand partners
 5. SDK compares all bids (Nativo + Prebid) and selects the highest price, setting targeting keywords accordingly
-6. GMA SDK sends a request to GAM for final decisioning
-7. GMA SDK renders the winning bid (if GAM's own ad wins, the flow ends here)
-8. If a Prebid or Nativo bid wins, GAM serves a passback creative signaling the SDK to take over rendering
+6. (If using GAM) GMA SDK sends a request to GAM for final decisioning
+7. (If using GAM) GMA SDK renders the winning bid (if GAM's own ad wins, the flow ends here)
+8. (If using GAM) If a Prebid or Nativo bid wins, GAM serves a passback creative signaling the SDK to take over rendering
 9. The SDK rendering module renders the winning bid
 
 ## Repackaging
@@ -64,27 +64,7 @@ It is applied by the `repackageReleaseAar` Gradle task (defined in [`PrebidMobil
 - `AndroidManifest.xml` class name references rewritten
 - Consumer ProGuard rules rewritten
 
-**Modules repackaged:**
-
-| Gradle module | Output artifact |
-|---|---|
-| `PrebidMobile-core` | `life360(-)ads-core` |
-| `PrebidMobile` | `life360(-)ads-sdk` |
-| `PrebidMobile-gamEventHandlers` | `life360(-)ads-gam-event-handlers` |
-| `PrebidMobile-admobAdapters` | `life360(-)ads-admob-adapters` |
-| `PrebidMobile-maxAdapters` | `life360(-)ads-max-adapters` |
-
 ## Build from Source
-
-### Upstream (Prebid) build
-
-After cloning the repo, run the following from the root directory:
-
-```
-scripts/buildPrebidMobile.sh
-```
-
-### Life360 (repackaged) build
 
 To produce the repackaged `com.life360.ads` artifacts for all modules, run:
 

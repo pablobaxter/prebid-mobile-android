@@ -22,6 +22,13 @@
 
     <developers>
         <developer>
+            <name>Life360 Ads Team</name>
+            <email>ads@life360.com</email>
+            <organization>Life360, Inc.</organization>
+            <organizationUrl>https://ads.life360.com</organizationUrl>
+        </developer>
+
+        <developer>
             <name>Postindustria AdTech Team</name>
             <email>hello@postindustria.com</email>
             <organization>Postindustria LTD</organization>
@@ -52,7 +59,7 @@
     <dependencies>
         <dependency>
             <groupId>com.life360</groupId>
-            <artifactId>life360(-)ads-sdk</artifactId>
+            <artifactId>life360-ads-sdk</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>

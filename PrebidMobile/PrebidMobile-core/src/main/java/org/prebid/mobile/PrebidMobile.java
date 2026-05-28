@@ -71,7 +71,7 @@ public class PrebidMobile {
     /**
      * SDK name provided for MRAID_ENV in {@link MraidEnv}
      */
-    public static final String SDK_NAME = "nativo-prebid-sdk-rendering";
+    public static final String SDK_NAME = "life360-ads-sdk";
     /**
      * Currently implemented MRAID version.
      */
