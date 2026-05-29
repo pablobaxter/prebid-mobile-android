@@ -209,10 +209,11 @@ for module in "${modules[@]}"; do
   POM_OUTPUT_NAME="${module/PrebidMobile/Life360AdsSDK}"
   TEMPLATE="$POM_TEMPLATE_DIR/${module}-pom.xml"
   if [ -f "$TEMPLATE" ]; then
-    awk -v VER="$RELEASE_VERSION" '
+    awk -v VER="$RELEASE_VERSION" -v OMSDK_VER="$OMSDK_VERSION" '
       { gsub(/<revision>[^<]*<\/revision>/, "<revision>" VER "<\/revision>")
         gsub(/<version>[[:space:]]*\$\{revision\}[[:space:]]*<\/version>/, "<version>" VER "<\/version>")
         gsub(/<version>[[:space:]]*\$\{project\.version\}[[:space:]]*<\/version>/, "<version>" VER "<\/version>")
+        gsub(/\$\{omsdk\.version\}/, OMSDK_VER)
         print }
     ' "$TEMPLATE" > "$POM_OUTDIR/${POM_OUTPUT_NAME}-${RELEASE_VERSION}.pom"
     echoX "  Generated $POM_OUTDIR/${POM_OUTPUT_NAME}-${RELEASE_VERSION}.pom"

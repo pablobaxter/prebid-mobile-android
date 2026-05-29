@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.life360</groupId>
             <artifactId>life360-ads-open-measurement-sdk</artifactId>
-            <version>1.6.5</version>
+            <version>${omsdk.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
