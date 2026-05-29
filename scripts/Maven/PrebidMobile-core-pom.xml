@@ -58,9 +58,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.prebid</groupId>
-            <artifactId>prebid-mobile-sdk-open-measurement</artifactId>
-            <version>1.4.1</version>
+            <groupId>com.life360</groupId>
+            <artifactId>life360-ads-open-measurement-sdk</artifactId>
+            <version>1.6.5</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

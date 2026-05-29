@@ -23,22 +23,22 @@ import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 
-import com.iab.omid.library.prebidorg.Omid;
-import com.iab.omid.library.prebidorg.ScriptInjector;
-import com.iab.omid.library.prebidorg.adsession.AdEvents;
-import com.iab.omid.library.prebidorg.adsession.AdSession;
-import com.iab.omid.library.prebidorg.adsession.AdSessionConfiguration;
-import com.iab.omid.library.prebidorg.adsession.AdSessionContext;
-import com.iab.omid.library.prebidorg.adsession.CreativeType;
-import com.iab.omid.library.prebidorg.adsession.FriendlyObstructionPurpose;
-import com.iab.omid.library.prebidorg.adsession.ImpressionType;
-import com.iab.omid.library.prebidorg.adsession.Owner;
-import com.iab.omid.library.prebidorg.adsession.Partner;
-import com.iab.omid.library.prebidorg.adsession.VerificationScriptResource;
-import com.iab.omid.library.prebidorg.adsession.media.InteractionType;
-import com.iab.omid.library.prebidorg.adsession.media.MediaEvents;
-import com.iab.omid.library.prebidorg.adsession.media.Position;
-import com.iab.omid.library.prebidorg.adsession.media.VastProperties;
+import com.iab.omid.library.life360.Omid;
+import com.iab.omid.library.life360.ScriptInjector;
+import com.iab.omid.library.life360.adsession.AdEvents;
+import com.iab.omid.library.life360.adsession.AdSession;
+import com.iab.omid.library.life360.adsession.AdSessionConfiguration;
+import com.iab.omid.library.life360.adsession.AdSessionContext;
+import com.iab.omid.library.life360.adsession.CreativeType;
+import com.iab.omid.library.life360.adsession.FriendlyObstructionPurpose;
+import com.iab.omid.library.life360.adsession.ImpressionType;
+import com.iab.omid.library.life360.adsession.Owner;
+import com.iab.omid.library.life360.adsession.Partner;
+import com.iab.omid.library.life360.adsession.VerificationScriptResource;
+import com.iab.omid.library.life360.adsession.media.InteractionType;
+import com.iab.omid.library.life360.adsession.media.MediaEvents;
+import com.iab.omid.library.life360.adsession.media.Position;
+import com.iab.omid.library.life360.adsession.media.VastProperties;
 
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.TargetingParams;
@@ -64,7 +64,7 @@ public class OmAdSessionManager {
 
     private static final String TAG = OmAdSessionManager.class.getSimpleName();
 
-    public static final String PARTNER_NAME = "Prebid";
+    public static final String PARTNER_NAME = "Life360";
     public static final String PARTNER_VERSION = BuildConfig.VERSION;
 
     private MediaEvents mediaEvents;
