@@ -57,6 +57,7 @@ if ! $IS_SNAPSHOT; then
 fi
 
 NAMESPACE="com.life360"
+OMSDK_VERSION="1.6.5"
 
 RELEASE_URL="https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 SNAPSHOT_URL="https://central.sonatype.com/repository/maven-snapshots/"
@@ -284,6 +285,16 @@ for n in ${!modules[@]}; do
     "$DEPLOY_DIR_ABSOLUTE/${OUTPUT_NAME}-javadoc.jar" \
     "${DEPLOY_URL}"
 done
+
+# Deploy omsdk (vendored OM SDK — version is fixed independently of RELEASE_VERSION)
+echo -e "\n"
+echoX "Deploying life360-ads-open-measurement-sdk on Maven..."
+OMSDK_POM="$(replace_version_placeholder "${BASE_DIR}/PrebidMobile-open-measurement-pom.xml" "${OMSDK_VERSION}")"
+mavenDeploy "$OMSDK_POM" \
+  "$DEPLOY_DIR_ABSOLUTE/omsdk.jar" \
+  "${BASE_DIR}/stub.jar" \
+  "${BASE_DIR}/stub.jar" \
+  "${DEPLOY_URL}"
 
 # Reset variables and temp data
 unset GPG_PASSPHRASE

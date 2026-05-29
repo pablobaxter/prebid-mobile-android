@@ -20,6 +20,8 @@ cd ..
 echo -e "$PWD"
 
 # Setup some constants for use later on.
+OMSDK_VERSION="1.6.5"
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
@@ -181,8 +183,8 @@ if [ "$1" != "-nojar" ]; then
   cd $TEMPDIR
   mkdir output
   cd output
-  cp -a "$BASEDIR/PrebidMobile/omsdk-android/omsdk-android-1.6.5.aar" "$TEMPDIR/output"
-  unzip -q -o omsdk-android-1.6.5.aar
+  cp -a "$BASEDIR/PrebidMobile/omsdk-android/omsdk-android-${OMSDK_VERSION}.aar" "$TEMPDIR/output"
+  unzip -q -o omsdk-android-${OMSDK_VERSION}.aar
   # Delete all files instead classes.jar
   find . ! -name 'classes.jar' -type f -exec rm -f {} +
   unzip -q -o classes.jar
@@ -218,6 +220,15 @@ for module in "${modules[@]}"; do
     echoX "  WARNING: No POM template found for ${module} at $TEMPLATE"
   fi
 done
+
+### omsdk POM
+OMSDK_TEMPLATE="$POM_TEMPLATE_DIR/PrebidMobile-open-measurement-pom.xml"
+if [ -f "$OMSDK_TEMPLATE" ]; then
+  cp "$OMSDK_TEMPLATE" "$POM_OUTDIR/Life360AdsSDK-omsdk-${OMSDK_VERSION}.pom"
+  echoX "  Generated $POM_OUTDIR/Life360AdsSDK-omsdk-${OMSDK_VERSION}.pom"
+else
+  echoX "  WARNING: No POM template found for omsdk at $OMSDK_TEMPLATE"
+fi
 
 #######
 # End
