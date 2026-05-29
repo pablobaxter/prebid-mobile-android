@@ -499,7 +499,7 @@ public class OmAdSessionManager {
                     jsLibraryManager.getOMSDKScript(),
                     verifications,
                     contentUrl,
-                    null
+                    ""
             );
         }
         catch (IllegalArgumentException e) {
