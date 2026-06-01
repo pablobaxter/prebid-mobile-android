@@ -57,7 +57,6 @@ if ! $IS_SNAPSHOT; then
 fi
 
 NAMESPACE="com.life360"
-OMSDK_VERSION="1.6.5"
 
 RELEASE_URL="https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 SNAPSHOT_URL="https://central.sonatype.com/repository/maven-snapshots/"
@@ -76,6 +75,16 @@ rm -r "$DEPLOY_DIR_ABSOLUTE" || true
 mkdir "$DEPLOY_DIR_ABSOLUTE"
 
 cd ..
+# Read OMSDK_VERSION from the single source of truth in build.gradle
+OMSDK_VERSION=""
+omsdk_regex='omSdkVersion.*=.*"(.*)"'
+while read -r line; do
+  if [[ $line =~ $omsdk_regex ]]; then
+    OMSDK_VERSION="${BASH_REMATCH[1]}"
+  fi
+done < "../build.gradle"
+[[ -z "${OMSDK_VERSION}" ]] && { echoX "ERROR: could not read omSdkVersion from build.gradle"; exit 1; }
+
 # Use the Nativo life build script (repackaging + NativoPrebidSDK output names)
 bash ./buildPrebidMobile-life.sh
 
@@ -116,7 +125,7 @@ function replace_version_placeholder() {
   local MODIFIED_POM="$(dirname "$ORIGINAL_POM")/pom/pom.xml"
   mkdir -p "$(dirname "$ORIGINAL_POM")/pom"
 
-  awk -v VER="$REVISION" '
+  awk -v VER="$REVISION" -v OMSDK_VER="$OMSDK_VERSION" '
     BEGIN { inParent=0; projectVersionDone=0 }
     {
       if ($0 ~ /<parent>/)   inParent=1
@@ -125,6 +134,7 @@ function replace_version_placeholder() {
       gsub(/<revision>[[:space:]]*[^<]*[[:space:]]*<\/revision>/, "<revision>" VER "</revision>")
       gsub(/<version>[[:space:]]*\$\{revision\}[[:space:]]*<\/version>/, "<version>" VER "</version>")
       gsub(/<version>[[:space:]]*\$\{project\.version\}[[:space:]]*<\/version>/, "<version>" VER "</version>")
+      gsub(/\$\{omsdk\.version\}/, OMSDK_VER)
 
       if (!inParent && !projectVersionDone && match($0, /<version>[^<]+<\/version>/)) {
         pv = substr($0, RSTART, RLENGTH)

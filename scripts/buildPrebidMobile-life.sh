@@ -20,7 +20,6 @@ cd ..
 echo -e "$PWD"
 
 # Setup some constants for use later on.
-OMSDK_VERSION="1.6.5"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -58,6 +57,14 @@ regex="prebidSdkVersionName.*=.*\"(.*)\""
 while read -r line; do
   if [[ $line =~ $regex ]]; then
     RELEASE_VERSION=${BASH_REMATCH[1]}
+  fi
+done <$LIBDIR/build.gradle
+
+omsdk_regex='omSdkVersion.*=.*"(.*)"'
+while read -r line; do
+  if [[ $line =~ $omsdk_regex ]]; then
+    OMSDK_VERSION=${BASH_REMATCH[1]}
+    echoX "OMSDK v$OMSDK_VERSION"
   fi
 done <$LIBDIR/build.gradle
 
@@ -225,7 +232,10 @@ done
 ### omsdk POM
 OMSDK_TEMPLATE="$POM_TEMPLATE_DIR/PrebidMobile-open-measurement-pom.xml"
 if [ -f "$OMSDK_TEMPLATE" ]; then
-  cp "$OMSDK_TEMPLATE" "$POM_OUTDIR/Life360AdsSDK-omsdk-${OMSDK_VERSION}.pom"
+  awk -v OMSDK_VER="$OMSDK_VERSION" '
+    { gsub(/\$\{omsdk\.version\}/, OMSDK_VER)
+      print }
+  ' "$OMSDK_TEMPLATE" > "$POM_OUTDIR/Life360AdsSDK-omsdk-${OMSDK_VERSION}.pom"
   echoX "  Generated $POM_OUTDIR/Life360AdsSDK-omsdk-${OMSDK_VERSION}.pom"
 else
   echoX "  WARNING: No POM template found for omsdk at $OMSDK_TEMPLATE"
