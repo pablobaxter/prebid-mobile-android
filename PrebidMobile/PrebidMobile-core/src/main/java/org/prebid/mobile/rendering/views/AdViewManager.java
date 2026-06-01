@@ -26,7 +26,7 @@ import org.prebid.mobile.api.data.AdFormat;
 import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.api.rendering.InterstitialView;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
-import org.prebid.mobile.core.R;
+import com.life360.ads.core.R;
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
 import org.prebid.mobile.rendering.listeners.CreativeViewListener;
 import org.prebid.mobile.rendering.loading.CreativeFactory;

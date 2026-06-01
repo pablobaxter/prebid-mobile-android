@@ -3,7 +3,7 @@ apply from: '../publisher.gradle'
 apply from: '../tests.gradle'
 
 android {
-    namespace "org.prebid.mobile.admob.adapters"
+    namespace "com.life360.ads.admob.adapters"
     defaultConfig {
         minSdkVersion 23
     }

@@ -4,14 +4,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.prebid</groupId>
-    <artifactId>prebid-mobile-sdk-max-adapters</artifactId>
+    <groupId>com.life360</groupId>
+    <artifactId>life360-ads-max-adapters</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
 
-    <name>Prebid Mobile Android SDK</name>
-    <description>Prebid Mobile</description>
-    <url>https://www.prebid.org</url>
+    <name> Life360 Ads Android SDK – MAX Adapters</name>
+    <description>Life360 Ads wrapper of the MAX adapters</description>
+    <url>https://github.com/life360-oss/nativo-prebid-sdk-android</url>
 
     <licenses>
         <license>
@@ -21,6 +21,13 @@
     </licenses>
 
     <developers>
+        <developer>
+            <name>Life360 Ads Team</name>
+            <email>ads@life360.com</email>
+            <organization>Life360, Inc.</organization>
+            <organizationUrl>https://ads.life360.com</organizationUrl>
+        </developer>
+
         <developer>
             <name>Postindustria AdTech Team</name>
             <email>hello@postindustria.com</email>
@@ -44,15 +51,15 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/prebid/prebid-mobile-android.git</connection>
-        <developerConnection>scm:git:https://github.com/prebid/prebid-mobile-android.git</developerConnection>
-        <url>https://github.com/prebid/prebid-mobile-android</url>
+        <connection>scm:git:https://github.com/life360-oss/nativo-prebid-sdk-android.git</connection>
+        <developerConnection>scm:git:https://github.com/life360-oss/nativo-prebid-sdk-android.git</developerConnection>
+        <url>https://github.com/life360-oss/nativo-prebid-sdk-android</url>
     </scm>
 
     <dependencies>
         <dependency>
-            <groupId>org.prebid</groupId>
-            <artifactId>prebid-mobile-sdk</artifactId>
+            <groupId>com.life360</groupId>
+            <artifactId>life360-ads-sdk</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>

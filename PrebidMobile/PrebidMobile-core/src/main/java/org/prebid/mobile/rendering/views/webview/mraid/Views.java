@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
+import com.life360.ads.core.R;
 import org.prebid.mobile.LogUtil;
 
 public class Views {

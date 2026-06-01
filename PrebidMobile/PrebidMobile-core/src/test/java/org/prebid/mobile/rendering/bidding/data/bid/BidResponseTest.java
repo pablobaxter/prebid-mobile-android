@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.prebid.mobile.PrebidMobile;
 import org.prebid.mobile.api.data.Position;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
-import org.prebid.mobile.core.BuildConfig;
+import com.life360.ads.core.BuildConfig;
 import org.prebid.mobile.rendering.models.openrtb.bidRequests.MobileSdkPassThrough;
 import org.prebid.mobile.test.utils.ResourceUtils;
 

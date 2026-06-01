@@ -23,8 +23,9 @@ import android.widget.FrameLayout;
 
 import androidx.core.content.ContextCompat;
 
-import com.nativo.prebidsdk.exposure.NativoCreativeVisibilityTracker;
+import com.life360.ads.exposure.NativoCreativeVisibilityTracker;
 
+import com.life360.ads.core.R;
 import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.configuration.AdUnitConfiguration;

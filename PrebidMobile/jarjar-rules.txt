@@ -1,0 +1,7 @@
+# Relocate all org.prebid.mobile classes into the com.life360.ads namespace.
+# This is applied at publish time (repackageReleaseAar Gradle task) so the
+# source tree stays on org.prebid.mobile and remains upstream-merge-friendly.
+#
+# Syntax: rule <from-glob> <to-pattern>
+#   @1 expands to everything matched by the first ** wildcard.
+rule org.prebid.mobile.** com.life360.ads.@1

@@ -33,7 +33,7 @@ import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.api.rendering.pluginrenderer.PluginEventListener;
 import org.prebid.mobile.api.rendering.pluginrenderer.PrebidMobilePluginRenderer;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
-import org.prebid.mobile.core.BuildConfig;
+import com.life360.ads.core.BuildConfig;
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
 import org.prebid.mobile.rendering.bidding.display.InterstitialController;
 import org.prebid.mobile.rendering.bidding.interfaces.InterstitialControllerListener;

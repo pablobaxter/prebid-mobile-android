@@ -9,7 +9,7 @@
     <version>${revision}</version>
     <packaging>jar</packaging>
 
-    <name>Prebid Mobile Android SDK</name>
+    <name> Life360 Ads Android SDK</name>
     <description>Prebid Mobile</description>
     <url>https://www.prebid.org</url>
 

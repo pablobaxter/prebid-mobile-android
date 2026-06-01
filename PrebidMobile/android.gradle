@@ -1,8 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
+// Publish-time relocation: org.prebid.mobile.** → com.life360.ads.**
+def _sdkLibDir = file('android.gradle').exists() ? projectDir : file('..')
+apply from: new File(_sdkLibDir, 'repackage.gradle')
+
 android {
-    namespace "org.prebid.mobile"
+    namespace "com.life360.ads"
     setCompileSdkVersion(rootProject.prebidSdkCompileVersion)
     setBuildToolsVersion(rootProject.prebidSdkBuildToolsVersion)
 

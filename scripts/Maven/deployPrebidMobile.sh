@@ -56,7 +56,7 @@ if ! $IS_SNAPSHOT; then
   fi
 fi
 
-NAMESPACE="org.prebid"
+NAMESPACE="com.nativo"
 
 RELEASE_URL="https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 SNAPSHOT_URL="https://central.sonatype.com/repository/maven-snapshots/"
@@ -271,7 +271,7 @@ for n in ${!modules[@]}; do
   fi
   
   # Configure the final POM file with correct version
-  pom="$(replace_version_placeholder "${BASE_DIR}/${module}-pom.xml" "${VERSION}" "${module}")"
+  pom="$(replace_version_placeholder "${BASE_DIR}/${module}-pom.xml" "${VERSION}")"
 
   mavenDeploy $"$pom" "$compiledPath" $"$DEPLOY_DIR_ABSOLUTE/${module}-sources.jar" $"$DEPLOY_DIR_ABSOLUTE/${module}-javadoc.jar" "${DEPLOY_URL}"
 done

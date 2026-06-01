@@ -30,7 +30,7 @@ import org.prebid.mobile.rendering.session.manager.OmAdSessionManager;
 import org.prebid.mobile.rendering.video.VideoAdEvent;
 import org.prebid.mobile.rendering.views.AdViewManager;
 import org.prebid.mobile.rendering.views.interstitial.InterstitialManager;
-import com.nativo.prebidsdk.exposure.NativoCreativeVisibilityTracker;
+import com.life360.ads.exposure.NativoCreativeVisibilityTracker;
 
 import java.lang.ref.WeakReference;
 

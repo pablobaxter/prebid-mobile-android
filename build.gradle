@@ -1,13 +1,13 @@
 ext {
-    prebidSdkVersionName = "3.3.1-alpha.2"
+    prebidSdkVersionName = "3.3.1-alpha.6"
     prebidSdkMinVersion = 19
     prebidSdkTargetVersion = 34
     prebidSdkCompileVersion = 34
     prebidSdkBuildToolsVersion = "35.0.1"
 
-    artifactGroupId = "org.prebid"
+    artifactGroupId = "com.life360"
     artifactFolder = "${buildDir}/generated-artifacts"
-    omSdkVersion = "1.4.1"
+    omSdkVersion = "1.6.5"
     omSdkModuleName = "omsdk-android"
 }
 
@@ -30,7 +30,6 @@ allprojects {
             name = "Central Portal Snapshots"
             url = uri("https://central.sonatype.com/repository/maven-snapshots/")
         }
-        mavenCentral()
         mavenCentral()
         maven { url 'https://maven.google.com' }
         maven { url 'https://jitpack.io' }

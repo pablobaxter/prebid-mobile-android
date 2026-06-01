@@ -25,7 +25,7 @@ import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.api.data.AdFormat;
 import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
-import org.prebid.mobile.core.R;
+import com.life360.ads.core.R;
 import org.prebid.mobile.rendering.listeners.VideoCreativeViewListener;
 import org.prebid.mobile.rendering.models.ViewPool;
 import org.prebid.mobile.rendering.utils.helpers.Dips;
