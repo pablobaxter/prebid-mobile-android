@@ -5,7 +5,7 @@ The  Life360 Ads SDK is an extension of the open-source [Prebid Mobile Android](
 ## Features
 
 ### Nativo Ad Request Pipeline
-An additional bid request is sent to Nativo as a demand source competing alongside Prebid. The SDK compares all bids and sends the winning bid to GAM, or other ad server.
+An additional bid request is sent to Nativo as a demand source competing alongside Prebid Server. The SDK compares all bids and sends the winning bid to GAM, or other ad server.
 
 ### Owned & Operated Ads
 Direct ad campaigns through Nativo are supported via an `isOwnedOperated` flag. When set, the ad bypasses the auction and is rendered immediately without going through Prebid Server or GAM.
@@ -19,15 +19,16 @@ The `NativoRenderer` plugin handles dynamic expansion of ad creatives to full wi
 ### Geo/Location Data with Nativo
 When a developer sets `shareGeoLocationWithNativo` to `true` and the user grants location permission, the SDK conditionally appends ORTB `geo` parameters to the Nativo bid request.
 
-### GAM Click Attribution with Prebid Rendering
-Clicks originating from Nativo or Prebid rendered ads are tracked back into the GAM platform, ensuring accurate click attribution and reporting.
+### GAM Click Attribution for 3rd party ads (Nativo & Prebid)
+When using GAM as the ad server, clicks within a Nativo or Prebid ad are tracked back into the GAM platform, ensuring accurate click attribution and reporting.
 
 ## Improvements & Bug Fixes
 
-Relative to upstream Prebid Mobile, this SDK includes the following fixes and improvements:
+Relative to the upstream Prebid Mobile, this SDK includes the following fixes and improvements:
 
 - **Viewability Tracking** — Scroll-based viewability tracking replacing the upstream poll-based approach, for more accurate measurement
 - **MRAID Expand** — Improved MRAID expand support with better animations and no glitching
+- **iframe Handling** — Within expanded ad content, fix to allow iframes to load
 - **Ad Refresh Handling** — Fix for ad refresh lifecycle management
 - **bURL Tracker** — Fix for auction macro replacement in billing URL tracking
 - **Rendering** — `PBMWebView` background color fixes
@@ -53,16 +54,6 @@ All public classes in this SDK are published under the `com.life360.ads` namespa
 
 The rule is defined in [`PrebidMobile/jarjar-rules.txt`](PrebidMobile/jarjar-rules.txt):
 
-```
-rule org.prebid.mobile.** com.life360.ads.@1
-```
-
-It is applied by the `repackageReleaseAar` Gradle task (defined in [`PrebidMobile/repackage.gradle`](PrebidMobile/repackage.gradle) and wired into every module via [`PrebidMobile/android.gradle`](PrebidMobile/android.gradle)). The task runs after `bundleReleaseAar` and produces a `<module>-release-repackaged.aar` in each module's `build/outputs/aar/` directory with:
-
-- All `org.prebid.mobile.*` bytecode relocated to `com.life360.ads.*`
-- Kotlin metadata updated to match the new package names
-- `AndroidManifest.xml` class name references rewritten
-- Consumer ProGuard rules rewritten
 
 ## Build from Source
 
