@@ -40,6 +40,7 @@ import org.mockito.MockitoAnnotations;
 import org.prebid.mobile.AdSize;
 import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.rendering.bidding.data.bid.Bid;
+import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
 import org.prebid.mobile.rendering.bidding.data.bid.Prebid;
 import org.prebid.mobile.rendering.bidding.listeners.BannerEventListener;
 import org.prebid.mobile.test.utils.WhiteBox;
@@ -151,16 +152,18 @@ public class GamBannerEventHandlerTest {
     @Test
     public void requestAdWithDifferentBids_VerifyAdStatus() {
         final Bid mockBid = mock(Bid.class);
+        final BidResponse mockBidResponse = mock(BidResponse.class);
+        when(mockBidResponse.getWinningBid()).thenReturn(mockBid);
         final Prebid mockPrebid = mock(Prebid.class);
         when(mockPrebid.getTargeting()).thenReturn(new HashMap<>());
 
         when(mockBid.getPrebid()).thenReturn(mockPrebid);
         when(mockBid.getPrice()).thenReturn(0.2);
-        bannerEventHandler.requestAdWithBid(mockBid);
+        bannerEventHandler.requestAdWithBid(mockBidResponse);
         assertTrue(getExpectingAppEventStatus());
 
         when(mockBid.getPrice()).thenReturn(0.0);
-        bannerEventHandler.requestAdWithBid(mockBid);
+        bannerEventHandler.requestAdWithBid(mockBidResponse);
         assertFalse(getExpectingAppEventStatus());
 
         bannerEventHandler.requestAdWithBid(null);

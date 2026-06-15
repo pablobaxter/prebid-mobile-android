@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
+import com.life360.ads.exposure.NativoCreativeVisibilityTracker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +29,6 @@ import org.mockito.MockitoAnnotations;
 import org.prebid.mobile.api.exceptions.AdException;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse;
-import org.prebid.mobile.rendering.models.CreativeVisibilityTracker;
 import org.prebid.mobile.rendering.models.internal.VisibilityTrackerResult;
 import org.prebid.mobile.rendering.models.ntv.NativeEventTracker;
 import org.prebid.mobile.rendering.utils.exposure.ViewExposure;
@@ -70,8 +70,8 @@ public class VideoViewTest {
 
     @Mock public AdViewManager mockAdViewManager;
     @Mock public VideoViewListener mockVideoViewListener;
-    @Mock private CreativeVisibilityTracker mockVisibilityTracker;
-    private CreativeVisibilityTracker.VisibilityTrackerListener visibilityTrackerListener;
+    @Mock private NativoCreativeVisibilityTracker mockVisibilityTracker;
+    private NativoCreativeVisibilityTracker.VisibilityTrackerListener visibilityTrackerListener;
 
     @Before
     public void setup() throws AdException {

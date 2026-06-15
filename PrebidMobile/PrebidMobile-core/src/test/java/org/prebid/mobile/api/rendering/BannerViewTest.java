@@ -242,8 +242,8 @@ public class BannerViewTest {
         BidRequesterListener listener = getBidRequesterListener();
         listener.onError(new AdException(AdException.INTERNAL_ERROR, "Test"));
 
-        assertEquals(mockBid, bannerView.getWinnerBid());
-        assertEquals(mockBidResponse, bannerView.getBidResponse());
+        assertNull(bannerView.getWinnerBid());
+        assertNull(bannerView.getBidResponse());
         verify(mockEventHandler, times(1)).requestAdWithBid(org.mockito.Mockito.isNull());
     }
     //endregion ======================= BidRequestListener tests
