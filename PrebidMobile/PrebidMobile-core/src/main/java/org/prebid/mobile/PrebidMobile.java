@@ -126,6 +126,7 @@ public class PrebidMobile {
     private static String customStatusEndpoint;
 
     private static Host host = Host.CUSTOM;
+    private static boolean prebidServerEnabled = true;
 
     private static final Map<String, String> storedBidResponses = new LinkedHashMap<>();
     private static HashMap<String, String> customHeaders = new HashMap<>();
@@ -278,8 +279,35 @@ public class PrebidMobile {
             LogUtil.error(TAG, "initializeSdk: serverURL is null.");
             return;
         }
+        PrebidMobile.prebidServerEnabled = true;
         PrebidMobile.host = Host.createCustomHost(serverURL);
         SdkInitializer.init(context, listener);
+    }
+
+    /**
+     * Initializes the SDK without a Prebid Server, for integrations that only use Nativo demand plus
+     * their own ad-server event handler. Use this overload when you have no Prebid Server to point at:
+     * the BannerView flow then skips the Prebid Server bid request entirely and goes straight from the
+     * Nativo request to the EventHandler request. The PBS /status check is also skipped during init.
+     *
+     * @param context  any context (must be not null)
+     * @param listener initialization listener (can be null).
+     */
+    @MainThread
+    public static void initializeWithoutPrebid(
+            @Nullable Context context,
+            @Nullable SdkInitializationListener listener
+    ) {
+        PrebidMobile.prebidServerEnabled = false;
+        SdkInitializer.init(context, listener);
+    }
+
+    /**
+     * Whether the SDK was initialized with a Prebid Server. When false (see
+     * {@link #initializeWithoutPrebid(Context, SdkInitializationListener)}), Prebid Server bid requests are skipped.
+     */
+    public static boolean isPrebidServerEnabled() {
+        return prebidServerEnabled;
     }
 
     /**

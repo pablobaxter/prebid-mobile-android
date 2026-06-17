@@ -45,6 +45,7 @@ import org.prebid.mobile.rendering.networking.ResponseHandler;
 import org.prebid.mobile.rendering.networking.modelcontrollers.BidRequester;
 import org.prebid.mobile.rendering.sdk.PrebidContextHolder;
 import org.prebid.mobile.rendering.utils.helpers.RefreshTimerTask;
+import org.prebid.mobile.rendering.utils.helpers.RefreshTriggered;
 import org.prebid.mobile.test.utils.ResourceUtils;
 import org.prebid.mobile.test.utils.WhiteBox;
 import org.robolectric.RobolectricTestRunner;
@@ -77,7 +78,46 @@ public class BidLoaderTest {
 
     @After
     public void clean() {
+        PrebidMobileReflection.setPrebidServerEnabled(true);
+    }
 
+    @Test
+    public void whenRefreshTriggeredInServerlessMode_NotifyServerlessListenerAndSkipLoad() {
+        PrebidMobileReflection.setPrebidServerEnabled(false);
+
+        BidLoader serverlessLoader = new BidLoader(mockAdConfiguration, bidRequesterListener);
+        WhiteBox.setInternalState(serverlessLoader, "bidRequester", mockRequester);
+        serverlessLoader.setBidRefreshListener(() -> true);
+        BidLoader.ServerlessRefreshListener mockServerlessListener = mock(BidLoader.ServerlessRefreshListener.class);
+        serverlessLoader.setServerlessRefreshListener(mockServerlessListener);
+
+        triggerRefresh(serverlessLoader);
+
+        verify(mockServerlessListener).onRefresh();
+        verify(mockRequester, never()).startAdRequest();
+    }
+
+    @Test
+    public void whenRefreshTriggeredWithPrebidServer_CallLoadNotServerlessListener() {
+        PrebidMobileReflection.setPrebidServerEnabled(true);
+        PrebidMobileReflection.setFlagsThatSdkIsInitialized();
+
+        BidLoader serverLoader = new BidLoader(mockAdConfiguration, bidRequesterListener);
+        WhiteBox.setInternalState(serverLoader, "bidRequester", mockRequester);
+        serverLoader.setBidRefreshListener(() -> true);
+        BidLoader.ServerlessRefreshListener mockServerlessListener = mock(BidLoader.ServerlessRefreshListener.class);
+        serverLoader.setServerlessRefreshListener(mockServerlessListener);
+
+        triggerRefresh(serverLoader);
+
+        verify(mockServerlessListener, never()).onRefresh();
+        verify(mockRequester).startAdRequest();
+    }
+
+    private void triggerRefresh(BidLoader loader) {
+        RefreshTriggered trigger = WhiteBox.getInternalState(
+                WhiteBox.getInternalState(loader, "refreshTimerTask"), "refreshTriggerListener");
+        trigger.handleRefresh();
     }
 
     @Test

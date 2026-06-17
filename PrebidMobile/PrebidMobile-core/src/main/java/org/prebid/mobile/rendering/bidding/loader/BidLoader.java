@@ -50,6 +50,7 @@ public class BidLoader {
 
     private BidRequesterListener requestListener;
     private BidRefreshListener bidRefreshListener;
+    private ServerlessRefreshListener serverlessRefreshListener;
 
     private final ResponseHandler responseHandler = new ResponseHandler() {
         @Override
@@ -109,6 +110,16 @@ public class BidLoader {
             return;
         }
 
+        // In serverless mode there is no Prebid Server to load from; re-run the Nativo + event handler
+        // path via the registered listener instead.
+        if (!PrebidMobile.isPrebidServerEnabled()) {
+            if (serverlessRefreshListener != null) {
+                LogUtil.debug(TAG, "refresh triggered: serverless reload being called ");
+                serverlessRefreshListener.onRefresh();
+            }
+            return;
+        }
+
         LogUtil.debug(TAG, "refresh triggered: load() being called ");
         load();
     });
@@ -121,6 +132,10 @@ public class BidLoader {
 
     public void setBidRefreshListener(BidRefreshListener bidRefreshListener) {
         this.bidRefreshListener = bidRefreshListener;
+    }
+
+    public void setServerlessRefreshListener(ServerlessRefreshListener serverlessRefreshListener) {
+        this.serverlessRefreshListener = serverlessRefreshListener;
     }
 
     public void load() {
@@ -185,6 +200,7 @@ public class BidLoader {
         }
         requestListener = null;
         bidRefreshListener = null;
+        serverlessRefreshListener = null;
     }
 
     private void sendBidRequest(AdUnitConfiguration config) {
@@ -245,6 +261,16 @@ public class BidLoader {
     public interface BidRefreshListener {
 
         boolean canPerformRefresh();
+
+    }
+
+    /**
+     * Serverless mode has no Prebid Server to reload from, so the refresh timer re-runs the full
+     * Nativo + event handler flow through this listener instead of calling {@link #load()}.
+     */
+    public interface ServerlessRefreshListener {
+
+        void onRefresh();
 
     }
 

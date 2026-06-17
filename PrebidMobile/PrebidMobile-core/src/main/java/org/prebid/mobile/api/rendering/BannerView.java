@@ -352,9 +352,16 @@ public class BannerView extends FrameLayout {
                 isPrimaryAdServerRequestInProgress = false;
                 // Start Nativo rendering
                 bannerEventListener.onSdkWin(bidResponse);
-            } else {
+            } else if (PrebidMobile.isPrebidServerEnabled()) {
                 // Start Prebid Server bid request
                 bidLoader.load();
+            } else {
+                // Serverless: no Prebid Server. Use the Nativo bid (if any) and go straight to the
+                // event handler, then schedule the next refresh.
+                winningBid = nativoServer.getNativoBidResponse();
+                isPrimaryAdServerRequestInProgress = winningBid != null;
+                eventHandler.requestAdWithBid(winningBid);
+                bidLoader.setupRefreshTimer();
             }
 
             return null;
@@ -517,6 +524,10 @@ public class BannerView extends FrameLayout {
             final boolean isWindowVisibleToUser = screenStateReceiver.isScreenOn();
             return visibilityChecker.isVisibleForRefresh(this) && isWindowVisibleToUser;
         });
+
+        // In serverless mode the refresh timer can't reload from Prebid Server; re-run the full
+        // Nativo + event handler flow instead.
+        bidLoader.setServerlessRefreshListener(this::loadAd);
     }
 
     private void initAdConfiguration() {

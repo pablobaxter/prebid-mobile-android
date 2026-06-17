@@ -17,6 +17,7 @@
 package org.prebid.mobile.rendering.sdk;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -71,6 +72,8 @@ public class PrebidMobileTest {
 
         PrebidMobile.setStoredAuctionResponse(null);
         PrebidMobile.clearStoredBidResponses();
+        PrebidMobileReflection.setPrebidServerEnabled(true);
+        PrebidMobileReflection.setDisableStatusCheck(false);
     }
 
     // Sets Build.VERSION.SDK_INT to LOLLIPOP(21) which prevents ProviderInstaller from execution
@@ -111,6 +114,26 @@ public class PrebidMobileTest {
         shadowOf(getMainLooper()).idle();
 
         verify(mockSdkInitListener, times(1)).onInitializationComplete(any());
+    }
+
+    @Test
+    public void initializeWithoutPrebid_DisablesPrebidServer() {
+        PrebidMobileReflection.setPrebidServerEnabled(true);
+
+        // The flag is set before SdkInitializer.init runs; a null context makes init bail immediately
+        // (no lingering background threads) while still exercising the flag flip.
+        PrebidMobile.initializeWithoutPrebid(null, (SdkInitializationListener) null);
+
+        assertFalse(PrebidMobile.isPrebidServerEnabled());
+    }
+
+    @Test
+    public void initializeSdkWithServerUrl_EnablesPrebidServer() {
+        PrebidMobileReflection.setPrebidServerEnabled(false);
+
+        PrebidMobile.initializeSdk(null, "https://prebid.example.com/openrtb2/auction", null);
+
+        assertTrue(PrebidMobile.isPrebidServerEnabled());
     }
 
     @Test
