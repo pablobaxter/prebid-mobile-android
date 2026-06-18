@@ -120,7 +120,7 @@ public class PublisherAdViewWrapper extends AdListener implements AppEventListen
             LoadAdError loadAdError) {
         final AdEvent adEvent = AdEvent.FAILED;
         adEvent.setErrorCode(loadAdError.getCode());
-
+        LogUtil.error("GoogleAds", loadAdError.getMessage());
         listener.onEvent(adEvent);
     }
 
