@@ -100,7 +100,7 @@ public class AdViewManagerTest {
         }
         assertNotNull(err);
         assertNull(adViewManager);
-        assertEquals(AdException.INTERNAL_ERROR + ": AdViewManagerListener is null", err.getMessage());
+        assertEquals("Exception: " + AdException.INTERNAL_ERROR + ", AdViewManagerListener is null", err.getMessage());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class AdViewManagerTest {
         adViewManager.show();
         verify(mockAdViewListener, never()).viewReadyForImmediateDisplay(any(View.class));
         verify(mockAdViewListener).failedToLoad((AdException) exceptionCaptor.capture());
-        assertEquals("SDK internal error: Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
+        assertEquals("Exception: SDK internal error, Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class AdViewManagerTest {
         adViewManager.show();
         verify(mockAdViewListener, never()).viewReadyForImmediateDisplay(any(View.class));
         verify(mockAdViewListener).failedToLoad((AdException) exceptionCaptor.capture());
-        assertEquals("SDK internal error: Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
+        assertEquals("Exception: SDK internal error, Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
     }
 
     @Test
@@ -191,7 +191,7 @@ public class AdViewManagerTest {
         adViewManager.show();
         verify(mockAdViewListener, never()).viewReadyForImmediateDisplay(any(View.class));
         verify(mockAdViewListener).failedToLoad((AdException) exceptionCaptor.capture());
-        assertEquals("SDK internal error: Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
+        assertEquals("Exception: SDK internal error, Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
     }
 
     @Test
@@ -213,7 +213,7 @@ public class AdViewManagerTest {
         adViewManager.show();
         verify(mockAdViewListener, never()).viewReadyForImmediateDisplay(any(View.class));
         verify(mockAdViewListener).failedToLoad((AdException) exceptionCaptor.capture());
-        assertEquals("SDK internal error: Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
+        assertEquals("Exception: SDK internal error, Creative has not been resolved yet", ((AdException) exceptionCaptor.getValue()).getMessage());
     }
 
     @Test
@@ -499,7 +499,7 @@ public class AdViewManagerTest {
 
         ArgumentCaptor exceptionCaptor = ArgumentCaptor.forClass(AdException.class);
         verify(mockAdViewListener).failedToLoad((AdException) exceptionCaptor.capture());
-        assertEquals("SDK internal error: Error message", ((AdException) exceptionCaptor.getValue()).getMessage());
+        assertEquals("Exception: SDK internal error, Error message", ((AdException) exceptionCaptor.getValue()).getMessage());
     }
 
     @Test

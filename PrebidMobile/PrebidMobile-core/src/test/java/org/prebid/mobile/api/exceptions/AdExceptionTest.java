@@ -37,7 +37,7 @@ public class AdExceptionTest {
             throwAdException(errorCode);
         }
         catch (AdException e) {
-            assertEquals(errorCode + ": " + EXCEPTION_MESSAGE, e.getMessage());
+            assertEquals("Exception: " + errorCode + ", " + EXCEPTION_MESSAGE, e.getMessage());
             return;
         }
 

@@ -22,6 +22,7 @@ import org.prebid.mobile.rendering.utils.helpers.ExternalViewerUtils
 import org.prebid.mobile.rendering.utils.helpers.AppInfoManager
 import com.life360.ads.bid.NativoBidExt
 import com.life360.ads.bid.NativoBidResponse
+import org.prebid.mobile.api.exceptions.NoBidException
 import java.util.concurrent.atomic.AtomicBoolean
 
 class NativoBidRequester : ExternalBidRequester {
@@ -93,8 +94,13 @@ class NativoBidRequester : ExternalBidRequester {
             }
 
             override fun onErrorWithException(e: Exception?, responseTime: Long) {
-                val message = e?.message ?: "Unknown exception"
-                finishWithError(listener, AdException(AdException.INTERNAL_ERROR, "Nativo request failed: $message"))
+                // A 204 surfaces as a NoBidException (thrown by BaseNetworkTask); forward it as-is so the
+                // publisher sees a no-bid result rather than a generic internal error.
+                if (e is NoBidException) {
+                    finishWithError(listener, e)
+                    return
+                }
+                finishWithError(listener, AdException(AdException.INTERNAL_ERROR, "Nativo request failed: ${e?.message ?: "Unknown exception"}"))
             }
         }
 
@@ -108,7 +114,7 @@ class NativoBidRequester : ExternalBidRequester {
     }
 
     private fun finishWithError(listener: ExternalBidRequesterListener, exception: AdException) {
-        LogUtil.error(TAG, exception.message)
+        if (exception !is NoBidException) LogUtil.debug(TAG, exception.message)
         requestInProgress.set(false)
         networkTask = null
         listener.onComplete(null, exception)

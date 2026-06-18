@@ -25,6 +25,7 @@ import org.prebid.mobile.LogUtil;
 import org.prebid.mobile.PrebidMobile;
 import org.prebid.mobile.rendering.loading.FileDownloadTask;
 import org.prebid.mobile.rendering.networking.exception.BaseExceptionHolder;
+import org.prebid.mobile.api.exceptions.NoBidException;
 import org.prebid.mobile.rendering.utils.helpers.Utils;
 
 import java.io.*;
@@ -216,6 +217,9 @@ public class BaseNetworkTask
                 start = System.currentTimeMillis();
                 result = sendRequest(param);
             }
+            catch (NoBidException e) {
+                result.setException(e);
+            }
             catch (MalformedURLException e) {
                 LogUtil.warning(TAG, "Network Error: MalformedURLException" + e.getMessage());
                 // This error will be handled in onPostExecute()- so no need to handle here - Nice
@@ -362,6 +366,9 @@ public class BaseNetworkTask
         if (httpURLResponseCode == 200) {
             response = readResponse(connection.getInputStream());
         }
+        else if (httpURLResponseCode == 204) {
+            throw new NoBidException();
+        }
         else if (httpURLResponseCode >= 400 && httpURLResponseCode < 600) {
             String status = String.format(
                     Locale.getDefault(),
@@ -374,7 +381,6 @@ public class BaseNetworkTask
         }
         else {
             String error = String.format("Bad server response - [HTTP Response code of %s]", httpURLResponseCode);
-            if (httpURLResponseCode == 204) error = "Response code 204. No bids.";
             LogUtil.error(TAG, error);
             throw new Exception(error);
         }

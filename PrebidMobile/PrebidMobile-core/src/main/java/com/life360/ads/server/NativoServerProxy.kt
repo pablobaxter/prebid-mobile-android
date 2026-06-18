@@ -4,11 +4,12 @@ import com.life360.ads.bid.NativoBidResponse
 import com.life360.ads.networking.NativoBidRequester
 import org.prebid.mobile.LogUtil
 import org.prebid.mobile.api.exceptions.AdException
+import org.prebid.mobile.api.exceptions.NoBidException
 import org.prebid.mobile.configuration.AdUnitConfiguration
 import org.prebid.mobile.rendering.bidding.data.bid.Bid
 import org.prebid.mobile.rendering.bidding.data.bid.BidResponse
 
-typealias NativoBidResponseCallback = (bidResponse: NativoBidResponse?, shouldRenderImmediately: Boolean) -> Unit
+typealias NativoBidResponseCallback = (bidResponse: NativoBidResponse?, shouldRenderImmediately: Boolean, error: AdException?) -> Unit
 
 class NativoServerProxy {
 
@@ -26,13 +27,13 @@ class NativoServerProxy {
         ) { response: BidResponse?, error: AdException? ->
             nativoBidResponse = response as NativoBidResponse?
 
-            if (error != null) {
-                LogUtil.error(this::class.simpleName, error.message)
+            if (error != null && error !is NoBidException) {
+                LogUtil.debug(this::class.simpleName, error.message)
             }
             if (response != null) {
-                callback(response, nativoBidRequester.shouldRenderImmediately(response))
+                callback(response, nativoBidRequester.shouldRenderImmediately(response), null)
             } else {
-                callback(null, false)
+                callback(null, false, error)
             }
         }
     }

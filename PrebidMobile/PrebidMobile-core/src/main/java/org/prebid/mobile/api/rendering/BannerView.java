@@ -249,7 +249,7 @@ public class BannerView extends FrameLayout {
             if (prebidAlsoWithoutAd) {
                 AdException parsedException = RenderingExceptionParser.getPrebidException(winningBid, prebidException);
                 String prebidStatus = parsedException != null ? parsedException.getMessage() : "Unknown";
-                notifyErrorListener(new AdException(AdException.NO_BIDS, "GAM status: \"" + gamException.getMessage() + "\". Prebid status: \"" + prebidStatus + "\""));
+                notifyErrorListener(new AdException(AdException.FAILED_TO_LOAD_BIDS, "GAM status: \"" + gamException.getMessage() + "\". Prebid status: \"" + prebidStatus + "\""));
                 return;
             }
 
@@ -345,7 +345,7 @@ public class BannerView extends FrameLayout {
         }
 
         isNativoBidRequestInProgress = true;
-        nativoServer.requestNativoBid(adUnitConfig, (bidResponse, shouldRenderImmediately) -> {
+        nativoServer.requestNativoBid(adUnitConfig, (bidResponse, shouldRenderImmediately, error) -> {
             isNativoBidRequestInProgress = false;
 
             if (shouldRenderImmediately && bidResponse != null) {
@@ -356,8 +356,7 @@ public class BannerView extends FrameLayout {
                 // Start Prebid Server bid request
                 bidLoader.load();
             } else {
-                // Serverless: no Prebid Server. Use the Nativo bid (if any) and go straight to the
-                // event handler, then schedule the next refresh.
+                prebidException = error;
                 winningBid = nativoServer.getNativoBidResponse();
                 isPrimaryAdServerRequestInProgress = winningBid != null;
                 eventHandler.requestAdWithBid(winningBid);
