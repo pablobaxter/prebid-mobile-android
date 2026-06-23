@@ -26,6 +26,6 @@ public class VastParseErrorTest {
     @Test
     public void testVastParseError() {
         VastParseError vastErr = new VastParseError("VASTERROR");
-        assertEquals(AdException.INTERNAL_ERROR + ": Failed to parse VAST. VASTERROR", vastErr.getMessage());
+        assertEquals("Exception: " + AdException.INTERNAL_ERROR + ", Failed to parse VAST. VASTERROR", vastErr.getMessage());
     }
 }

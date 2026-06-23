@@ -87,6 +87,7 @@ public class SdkInitializerTest {
         PrebidContextHolder.clearContext();
         Reflection.setStaticVariableTo(InitializationNotifier.class, "initializationInProgress", false);
         Reflection.setStaticVariableTo(PrebidMobile.class, "disableStatusCheck", false);
+        Reflection.setStaticVariableTo(PrebidMobile.class, "prebidServerEnabled", true);
     }
 
 
@@ -288,6 +289,24 @@ public class SdkInitializerTest {
         String secondTaskName = allTasks.get(1).getClass().toString();
         MatcherAssert.assertThat(secondTaskName, is(startsWith("class org.prebid.mobile.rendering.sdk.UserAgentFetcherTask")));
 
+        verify(executorMock, times(1)).shutdown();
+        verify(executorMock, times(1)).awaitTermination(TERMINATION_TIMEOUT, TimeUnit.SECONDS);
+    }
+
+
+    @Test
+    public void runBackgroundTasks_serverlessMode_statusCheckSkipped() throws InterruptedException {
+        Reflection.setStaticVariableTo(PrebidMobile.class, "prebidServerEnabled", false);
+
+        ExecutorService executorMock = mock(ExecutorService.class);
+        SdkInitializer.runBackgroundTasks(mock(InitializationNotifier.class), executorMock);
+
+        // No StatusRequester is submitted because there is no Prebid Server to check.
+        ArgumentCaptor<Callable> requesterCaptor = ArgumentCaptor.forClass(Callable.class);
+        verify(executorMock, times(0)).submit(requesterCaptor.capture());
+        MatcherAssert.assertThat(requesterCaptor.getAllValues(), is(empty()));
+
+        verify(executorMock, times(3)).execute(any(Runnable.class));
         verify(executorMock, times(1)).shutdown();
         verify(executorMock, times(1)).awaitTermination(TERMINATION_TIMEOUT, TimeUnit.SECONDS);
     }

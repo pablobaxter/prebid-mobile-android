@@ -21,12 +21,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.prebid.mobile.AdSize;
+import org.prebid.mobile.PrebidMobile;
 import org.prebid.mobile.api.data.AdFormat;
 import org.prebid.mobile.api.data.VideoPlacementType;
 import org.prebid.mobile.api.exceptions.AdException;
@@ -93,6 +95,11 @@ public class BannerViewTest {
         bannerView.setBannerVideoListener(mockBannerVideoListener);
 
         assertEquals(AdPosition.UNDEFINED.getValue(), bannerView.getAdPosition().getValue());
+    }
+
+    @After
+    public void tearDown() {
+        WhiteBox.setStaticVariableTo(PrebidMobile.class, "prebidServerEnabled", true);
     }
 
     @Test
@@ -242,8 +249,8 @@ public class BannerViewTest {
         BidRequesterListener listener = getBidRequesterListener();
         listener.onError(new AdException(AdException.INTERNAL_ERROR, "Test"));
 
-        assertEquals(mockBid, bannerView.getWinnerBid());
-        assertEquals(mockBidResponse, bannerView.getBidResponse());
+        assertNull(bannerView.getWinnerBid());
+        assertNull(bannerView.getBidResponse());
         verify(mockEventHandler, times(1)).requestAdWithBid(org.mockito.Mockito.isNull());
     }
     //endregion ======================= BidRequestListener tests
@@ -302,7 +309,7 @@ public class BannerViewTest {
 
         bannerEventListener.onAdFailed(exception);
 
-        verify(mockBannerListener, times(1)).onAdFailed(bannerView, new AdException(AdException.NO_BIDS, "GAM status: \"SDK internal error: GAM error\". Prebid status: \"SDK internal error: Unknown exception\""));
+        verify(mockBannerListener, times(1)).onAdFailed(bannerView, new AdException(AdException.FAILED_TO_LOAD_BIDS, "GAM status: \"Exception: SDK internal error, GAM error\". Prebid status: \"Exception: SDK internal error, Unknown exception\""));
     }
 
     @Test
@@ -351,6 +358,19 @@ public class BannerViewTest {
     public void whenLoadAd_CallBidLoaderLoad() {
         bannerView.loadAd();
         verify(mockBidLoader).load();
+    }
+
+    @Test
+    public void loadAdInServerlessMode_SkipBidLoaderRequestAdWithBidAndScheduleRefresh() {
+        // Serverless mode: no Prebid Server. The (real) Nativo request fails synchronously because no
+        // context is set, so loadAd() falls through to the serverless branch.
+        WhiteBox.setStaticVariableTo(PrebidMobile.class, "prebidServerEnabled", false);
+
+        bannerView.loadAd();
+
+        verify(mockBidLoader, never()).load();
+        verify(mockEventHandler, times(1)).requestAdWithBid(org.mockito.Mockito.isNull());
+        verify(mockBidLoader, times(1)).setupRefreshTimer();
     }
 
     @Test

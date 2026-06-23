@@ -24,7 +24,7 @@ public class RenderingExceptionParser {
         }
 
         if (bidResponse.getWinningBid() == null) {
-            return new AdException(AdException.NO_BIDS, "There are no bids or bids don't have required targeting keywords");
+            return new AdException(AdException.FAILED_TO_LOAD_BIDS, "There are no bids or bids don't have required targeting keywords");
         }
         return null;
     }

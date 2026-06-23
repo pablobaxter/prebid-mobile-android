@@ -53,6 +53,7 @@ import org.prebid.mobile.TargetingParams;
 import org.prebid.mobile.VideoParameters;
 import org.prebid.mobile.api.data.AdFormat;
 import org.prebid.mobile.api.data.AdUnitFormat;
+import org.prebid.mobile.api.rendering.PrebidRenderer;
 import org.prebid.mobile.api.rendering.pluginrenderer.PrebidMobilePluginRegister;
 import org.prebid.mobile.api.rendering.pluginrenderer.PrebidMobilePluginRenderer;
 import org.prebid.mobile.configuration.AdUnitConfiguration;
@@ -74,6 +75,7 @@ import org.prebid.mobile.rendering.sdk.ManagersResolver;
 import org.prebid.mobile.rendering.session.manager.OmAdSessionManager;
 import org.prebid.mobile.rendering.utils.helpers.Utils;
 import org.prebid.mobile.rendering.video.vast.Ad;
+import org.prebid.mobile.test.utils.WhiteBox;
 import org.prebid.mobile.testutils.FakePrebidMobilePluginRenderer;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
@@ -84,6 +86,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RunWith(RobolectricTestRunner.class)
@@ -108,6 +111,13 @@ public class BasicParameterBuilderTest {
         context = Robolectric.buildActivity(Activity.class).create().get();
         ManagersResolver.getInstance().prepare(context);
         TargetingParams.setExternalUserIds(null);
+        // The plugin register is a process-wide singleton and other test classes register
+        // renderers into it without cleaning up, so reset it to a deterministic state:
+        // only the default renderer, which SdkInitializer registers at startup in production.
+        Map<String, PrebidMobilePluginRenderer> plugins =
+            WhiteBox.getInternalState(PrebidMobilePluginRegister.getInstance(), "plugins");
+        plugins.clear();
+        PrebidMobile.registerPluginRenderer(new PrebidRenderer());
     }
 
     @After
@@ -315,7 +325,7 @@ public class BasicParameterBuilderTest {
         assertEquals(adRequestInput.getBidRequest().getId(), source.getTid());
 
         JSONObject sourceExtJson = source.getJsonObject().getJSONObject("ext");
-        assertEquals("Prebid", sourceExtJson.getString("omidpn"));
+        assertEquals(OmAdSessionManager.PARTNER_NAME, sourceExtJson.getString("omidpn"));
         assertEquals(PrebidMobile.SDK_VERSION, sourceExtJson.getString("omidpv"));
     }
 

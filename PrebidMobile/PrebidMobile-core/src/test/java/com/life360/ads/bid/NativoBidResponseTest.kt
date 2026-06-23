@@ -1,12 +1,15 @@
 package com.life360.ads.bid
 
+import com.life360.ads.renderer.NativoRenderer
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.prebid.mobile.configuration.AdUnitConfiguration
+import org.prebid.mobile.rendering.bidding.data.bid.BidResponse
 
 /**
  * Regression tests for [NativoBidResponse] `applyTargeting`: price strings (`hb_pb` / `hb_pb_nativo`)
@@ -109,6 +112,49 @@ class NativoBidResponseTest {
         assertEquals(0, winning.height)
         assertEquals("0x0", winning.prebid.targeting["hb_size"])
         assertEquals("0x0", winning.prebid.targeting["hb_size_nativo"])
+    }
+
+    @Test
+    fun applyRendererMeta_setsNativoRendererNameAndVersionOnWinningBid() {
+        val response = nativoBidResponse(singleBidJson(1.0))
+
+        val meta = response.winningBid!!.prebid.meta
+        assertEquals(NativoRenderer.NAME, meta[BidResponse.KEY_RENDERER_NAME])
+        assertEquals(NativoRenderer.VERSION, meta[BidResponse.KEY_RENDERER_VERSION])
+    }
+
+    @Test
+    fun selectWinningBid_picksHighestAcrossMultipleSeatbids() {
+        val seatA = JSONObject().put("seat", "a").put("bid", JSONArray().put(bidJson("a1", 1.0)))
+        val seatB = JSONObject().put("seat", "b").put("bid", JSONArray().put(bidJson("b1", 4.0)))
+        val json = JSONObject()
+            .put("id", "resp1")
+            .put("seatbid", JSONArray().put(seatA).put(seatB))
+            .toString()
+
+        val response = nativoBidResponse(json)
+
+        assertEquals("b1", response.winningBid!!.id)
+    }
+
+    @Test
+    fun winningBid_whenNoSeatbids_isNullAndNoTargetingApplied() {
+        val json = JSONObject().put("id", "resp1").put("seatbid", JSONArray()).toString()
+
+        val response = nativoBidResponse(json)
+
+        // No Nativo bid selected, so getWinningBid() falls through to the base response (null here).
+        assertNull(response.winningBid)
+    }
+
+    @Test
+    fun winningBid_whenSeatbidHasNoBids_isNull() {
+        val emptySeat = JSONObject().put("seat", "nativo").put("bid", JSONArray())
+        val json = JSONObject().put("id", "resp1").put("seatbid", JSONArray().put(emptySeat)).toString()
+
+        val response = nativoBidResponse(json)
+
+        assertNull(response.winningBid)
     }
 
     private fun nativoBidResponse(json: String): NativoBidResponse {

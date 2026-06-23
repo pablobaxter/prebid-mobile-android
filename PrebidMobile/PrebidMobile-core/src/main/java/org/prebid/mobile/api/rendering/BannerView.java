@@ -249,7 +249,7 @@ public class BannerView extends FrameLayout {
             if (prebidAlsoWithoutAd) {
                 AdException parsedException = RenderingExceptionParser.getPrebidException(winningBid, prebidException);
                 String prebidStatus = parsedException != null ? parsedException.getMessage() : "Unknown";
-                notifyErrorListener(new AdException(AdException.NO_BIDS, "GAM status: \"" + gamException.getMessage() + "\". Prebid status: \"" + prebidStatus + "\""));
+                notifyErrorListener(new AdException(AdException.FAILED_TO_LOAD_BIDS, "GAM status: \"" + gamException.getMessage() + "\". Prebid status: \"" + prebidStatus + "\""));
                 return;
             }
 
@@ -345,16 +345,22 @@ public class BannerView extends FrameLayout {
         }
 
         isNativoBidRequestInProgress = true;
-        nativoServer.requestNativoBid(adUnitConfig, (bidResponse, shouldRenderImmediately) -> {
+        nativoServer.requestNativoBid(adUnitConfig, (bidResponse, shouldRenderImmediately, error) -> {
             isNativoBidRequestInProgress = false;
 
             if (shouldRenderImmediately && bidResponse != null) {
                 isPrimaryAdServerRequestInProgress = false;
                 // Start Nativo rendering
                 bannerEventListener.onSdkWin(bidResponse);
-            } else {
+            } else if (PrebidMobile.isPrebidServerEnabled()) {
                 // Start Prebid Server bid request
                 bidLoader.load();
+            } else {
+                prebidException = error;
+                winningBid = nativoServer.getNativoBidResponse();
+                isPrimaryAdServerRequestInProgress = winningBid != null;
+                eventHandler.requestAdWithBid(winningBid);
+                bidLoader.setupRefreshTimer();
             }
 
             return null;
@@ -517,6 +523,10 @@ public class BannerView extends FrameLayout {
             final boolean isWindowVisibleToUser = screenStateReceiver.isScreenOn();
             return visibilityChecker.isVisibleForRefresh(this) && isWindowVisibleToUser;
         });
+
+        // In serverless mode the refresh timer can't reload from Prebid Server; re-run the full
+        // Nativo + event handler flow instead.
+        bidLoader.setServerlessRefreshListener(this::loadAd);
     }
 
     private void initAdConfiguration() {

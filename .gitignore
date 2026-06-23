@@ -68,3 +68,8 @@ captures/
 .responses
 
 .claude/
+
+# Eclipse
+.classpath
+.project
+.settings/

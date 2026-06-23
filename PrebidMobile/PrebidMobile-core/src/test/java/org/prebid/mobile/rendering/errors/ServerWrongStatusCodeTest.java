@@ -26,6 +26,6 @@ public class ServerWrongStatusCodeTest {
     @Test
     public void testServerWrongStatusCode() {
         ServerWrongStatusCode error = new ServerWrongStatusCode(404);
-        assertEquals(AdException.SERVER_ERROR + ": Server returned 404 status code", error.getMessage());
+        assertEquals("Exception: " + AdException.SERVER_ERROR + ", Server returned 404 status code", error.getMessage());
     }
 }

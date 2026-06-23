@@ -217,7 +217,7 @@ public class RewardedAdUnit extends BaseInterstitialAdUnit {
                 if (prebidAlsoWithoutAd) {
                     AdException parsedException = RenderingExceptionParser.getPrebidException(getBidResponse(), prebidException);
                     String prebidStatus = parsedException != null ? parsedException.getMessage() : "Unknown";
-                    notifyErrorListener(new AdException(AdException.NO_BIDS, "GAM status: \"" + gamException.getMessage() + "\". Prebid status: \"" + prebidStatus + "\""));
+                    notifyErrorListener(new AdException(AdException.FAILED_TO_LOAD_BIDS, "GAM status: \"" + gamException.getMessage() + "\". Prebid status: \"" + prebidStatus + "\""));
                     changeInterstitialAdUnitState(READY_FOR_LOAD);
                     return;
                 }

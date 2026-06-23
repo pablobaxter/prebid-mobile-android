@@ -34,7 +34,7 @@ public class InitializationNotifier {
         postOnMainThread(() -> {
             boolean statusRequestSuccessful = statusRequesterError == null;
             if (statusRequestSuccessful) {
-                LogUtil.debug(TAG, "Prebid SDK " + PrebidMobile.SDK_VERSION + " initialized");
+                LogUtil.debug(TAG, "Life360 Ads SDK " + PrebidMobile.SDK_VERSION + " initialized");
 
                 if (listener != null) {
                     //allows placing of bids to occur in InitializationListener
